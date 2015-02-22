@@ -15,8 +15,8 @@
       })
       .then(function () {
         document.addEventListener('deviceready', function () {
-          window.mostacho.admobService.init();
-          window.mostacho.analyticsService.init();   
+          window.mostachoAdmobService.init();
+          window.mostachoAnalyticsService.init();   
         });
       });
   });

@@ -1,0 +1,29 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mostacho-admob-service" attributes="">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          window.mostachoAdmobService = this;
+        },
+
+        init: function () {
+          if(!_.isUndefined(window.AdMob)) {
+            AdMob.createBanner( {
+            adId: 'ca-app-pub-9850680385333731/4759838803', 
+            position: AdMob.AD_POSITION.BOTTOM_CENTER, 
+            autoShow: true } )        
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>
