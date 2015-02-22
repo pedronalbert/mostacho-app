@@ -68,7 +68,10 @@ gulp.task('copy', function () {
     .pipe($.rename('elements.vulcanized.html'))
     .pipe(gulp.dest('dist/elements'));
 
-  return merge(app, bower, elements, vulcanized).pipe($.size({title: 'copy'}));
+  var scripts = gulp.src('app/scripts/*')
+    .pipe(gulp.dest('dist/scripts/'))
+
+  return merge(app, bower, elements, vulcanized, scripts).pipe($.size({title: 'copy'}));
 });
 
 // Copy Web Fonts To Dist
@@ -152,7 +155,8 @@ gulp.task('vulcanize', function () {
   return gulp.src('dist/elements/elements.vulcanized.html')
     .pipe($.vulcanize({
       dest: DEST_DIR,
-      strip: true
+      strip: true,
+      inline: true
     }))
     .pipe(gulp.dest(DEST_DIR))
     .pipe($.size({title: 'vulcanize'}));
