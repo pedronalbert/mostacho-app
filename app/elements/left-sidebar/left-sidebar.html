@@ -61,7 +61,7 @@
           if(this.hasAttribute('open')) {
             Velocity(this.$.sidebar, {
               left: '-' + this.$.sidebar.offsetWidth
-            }, 600)
+            }, 300)
               .then(function () {
                 //sacar un poquito para poder swipiar
                 this.$.sidebar.style.opacity = 0;
@@ -82,7 +82,7 @@
           if(!this.hasAttribute('open')) {
             Velocity(this.$.sidebar, {
               left: '0'
-            }, 600)
+            }, 300)
               .then(function () {
                 this.setAttribute('open', '');
               }.bind(this))

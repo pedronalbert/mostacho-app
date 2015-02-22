@@ -55,6 +55,9 @@
         ready: function () {
           this.i18n = window.mostachoI18n;
           this.routeService = window.mostachoRouteService;
+          this.analyticsService = window.mostachoAnalyticsService;
+
+          this.analyticsService.trackView('HomePage');
         },
 
         goToSummonerSearch: function () {

@@ -54,13 +54,5 @@
     bottom: 1rem;
     right: 1rem;
     z-index: 5;
-    animation: parpadear 0.9s infinite alternate;
-  }
-}
-
-@keyframes parpadear {
-  to {
-    background-color: #e0796f;
-    -webkit-transform: scale(1.1);
   }
 }

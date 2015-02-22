@@ -102,8 +102,8 @@
         },
         
         attached: function () {
-          this.toastService.show(this.i18n.strings.toast.loading, 80000);
-          this.analyticsService.trackView('GameCurrent');
+          this.toastService.show(this.i18n.strings.toast.loading, 50000);
+          this.analyticsService.trackView('GameCurrent ' + this.region);
           this.getData();
         },
 

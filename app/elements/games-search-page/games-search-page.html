@@ -60,7 +60,7 @@
           this.routeService = window.mostachoRouteService;
           this.riotApi = window.riotApi;
 
-          this.analyticsService.trackView('GameSearchPage');
+          this.analyticsService.trackView('GameSearch');
         },
 
         searchGame: function (event, detail, target) {
@@ -89,6 +89,7 @@
           }
 
           this.analyticsService.trackEvent('GameSearch', name + ' ' + region);
+          this.toastService.show(this.i18n.strings.toast.searchingGame, 30000);
           this.riotApi.getSummonerByName(name, region)
             .then(function (summoner) {
               this.summoner = summoner;

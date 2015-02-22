@@ -11,17 +11,12 @@
     (function () {
       Polymer({
         ready: function () {
-          console.log('swipe-pages ready');
           this.onMutation(this, this.getPages);
         },
 
         attached: function() {
           var hammer = new Hammer(this);
           this.getPages();
-
-          hammer.on('tap', function (e) {
-            console.log('zhukistrukis');
-          })
 
           hammer.on("swipeleft swiperight", function(e) {
             if (e.type === "swipeleft" & this.selected < this.nPages - 1) {

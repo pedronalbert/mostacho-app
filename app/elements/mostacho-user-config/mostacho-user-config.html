@@ -13,18 +13,15 @@
         },
 
         init: function () {
-          console.log('mostacho-user-config: init()');
           return new Promise(function (resolve, reject) {
             localforage.getItem('user_config')
               .then(function (config) {
                 if(_.isNull(config) || _.isUndefined(config)) {
                   this.setNewConfig()
                     .then(function (config) {
-                      console.log('mostacho-user-config: new config setted' + JSON.stringify(config));
                       resolve();
                     });
                 } else {
-                  console.log('mostacho-user-config: set existing config: ' + JSON.stringify(config));
                   _userConfig = config;
                   return resolve(config);
                 }
@@ -43,7 +40,6 @@
 
             localforage.setItem('user_config', _userConfig)
               .then(function () {
-                console.log('config setted');
               });
           }
         },

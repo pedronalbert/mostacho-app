@@ -233,7 +233,6 @@
               }.bind(this))
 
             function getFromServer() {
-              console.log('getting from server');
               Request
                 .get(BACKEND_URL + '/riot/summoner/' + id + '/games/recent')
                 .query({region: region})
@@ -254,7 +253,6 @@
 
               localforage.setItem(region + '_summoner_' + id + '_games_recent', data)
                 .then(function (gamesRecent) {
-                  console.log(gamesRecent);
                 })
               localforage.setItem(region + '_summoner_' + id + '_games_recent_requested_at', requested_at)
                 .then(function () {

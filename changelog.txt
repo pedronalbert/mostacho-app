@@ -6,3 +6,4 @@ Cambios:
 -Muestra el tipo y mapa de los juegos recientes
 -items comprados en los juegos recientes
 -bug de gana y pierde en counters
+-velocidad del menu

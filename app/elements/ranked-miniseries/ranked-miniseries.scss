@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  .container {
+    display: flex;
+    justify-content: center;
+    core-icon {
+      color: #000;
+      height: 20px;
+      width: 20px;
+      margin: 0px 2px;
+      &[aria-label="check"] {
+        color: #4caf50;
+      }
+      &[aria-label="close"] {
+        color: #f00;
+      }
+    }
+  }
+}

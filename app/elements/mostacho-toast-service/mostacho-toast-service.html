@@ -2,7 +2,7 @@
 
 <polymer-element name="mostacho-toast-service">
   <template>
-    <paper-toast id="toast" on-core-overlay-open="{{handleOpen}}"></paper-toast>
+    <paper-toast id="toast" on-core-overlay-open="{{handleOpen}}" autoCloseDisabled></paper-toast>
   </template>
 
   <script>
@@ -13,11 +13,14 @@
         },
         
         show: function (text, time) {
-          time = time || 3000;
+          time = time || 2500;
 
+          this.hide();
           this.$.toast.setAttribute('text', text);
           this.$.toast.setAttribute('duration', time);
-          this.$.toast.show();
+          this.async(function () {
+            this.$.toast.show();
+          }, this, 1)
 
         },
 
@@ -28,10 +31,10 @@
         handleOpen: function(event) {
           if(event.detail) {
             var fab = document.querySelectorAll('html /deep/ [toastable]');
-            Velocity(fab, {bottom: '+=45px'}, 400)   
+            Velocity(fab, {bottom: '+=45px'}, 300)   
           } else {
             var fab = document.querySelectorAll('html /deep/ [toastable]');
-            Velocity(fab, 'reverse', 400)
+            Velocity(fab, 'reverse', 300)
           }
         }    
       })

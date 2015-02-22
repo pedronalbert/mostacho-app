@@ -59,6 +59,8 @@
           this.routeService = window.mostachoRouteService;
           this.riotApi = window.riotApi;
           this.toastService = window.mostachoToastService;
+
+          this.analyticsService.trackView('SummonersSearch');
         },
 
         goBack: function() {

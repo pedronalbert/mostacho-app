@@ -1,0 +1,32 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="ranked-miniseries" attributes="progress">
+  <template>
+    <link rel="stylesheet" href="ranked-miniseries.css" />
+
+    <div class="container">
+        <template repeat="{{icon in icons}}">
+          <core-icon icon="{{icon}}"></core-icon>
+        </template>
+    </div>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          this.icons = [];
+        },
+
+        attached: function () {
+
+          _.forEach(this.progress, function (progress) {
+            if(_.isEqual(progress, 'L')) this.icons.push('mdi:close');
+            if(_.isEqual(progress, 'W')) this.icons.push('mdi:check');
+            if(_.isEqual(progress, 'N')) this.icons.push('mdi:minus');
+          }.bind(this))
+        }
+      });
+    })();
+  </script>
+</polymer-element>

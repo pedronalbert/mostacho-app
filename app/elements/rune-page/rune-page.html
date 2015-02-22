@@ -3,8 +3,6 @@
 <polymer-element name="rune-page" attributes="page">
   <template>
     <link rel="stylesheet" href="rune-page.css" />
-    
-    <template if="{{page.slots.length > 0}}">
       <div class="container">
         <div class="title">
           {{i18n.strings.quintessences}}
@@ -86,7 +84,6 @@
           </div>
         </template>
       </div>
-    </template>
   </template>
   <script>
     (function () {

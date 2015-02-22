@@ -43,7 +43,7 @@
           this.riotApi = window.riotApi;
 
           this.toastService.show(this.i18n.strings.toast.loading, 80000);
-          this.analyticsService.trackView('CountersBattlesResult');
+          this.analyticsService.trackView('CountersBattlesPage');
           this.tabSelected = 0;
           this.getData();
         },
@@ -55,7 +55,6 @@
               return this.riotApi.getChampions();
             }.bind(this))
             .then(function (champions){
-              console.log(this.battle);
               this.battle.champion = _.find(champions, {id: this.battle.champion});
               this.battle.opponent = _.find(champions, {id: this.battle.opponent});
               return this.toastService.hide();

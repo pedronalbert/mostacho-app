@@ -42,8 +42,9 @@
     (function () {
       Polymer({
         ready: function () {
-          this.i18n = document.getElementById('mostachoI18n');
-          this.routeService = document.getElementById('mostachoRouteService');
+          this.i18n = window.mostachoI18n;
+          this.routeService = window.mostachoRouteService;
+          this.analyticsService = window.mostachoAnalyticsService;
         },
 
         goBack: function () {
