@@ -1,0 +1,336 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mostacho-i18n" attributes="strings">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+  <script>
+    (function () {
+    var _strings = {
+      en: {
+        profile: 'profile',
+        attack: 'attack',
+        bans: 'bans',
+        blueTeam: 'blue team',
+        champions: 'champions',
+        change: 'change',
+        close: 'close',
+        comingSoon: 'comingsoon',
+        counterpicks: 'counter picks',
+        counterpicksHelpText: 'Be informed of the best counterpicks, vote for them to position better information',
+        defeats: 'defeats',
+        defense: 'defense',
+        fastSearch: 'fast search',
+        fastSearchHelpText: 'last summoners searched.',
+        games: 'games',
+        glyphs: 'glyphs',
+        history: 'history',
+        language: 'language',
+        league: 'league',
+        leaguePoints: 'league points',
+        leave: 'leave',
+        level: 'level',
+        marks: 'marks',
+        masteries: 'masteries',
+        performance: 'performance',
+        promotion: 'promotions',
+        purpleTeam: 'purple team',
+        quintessences: 'quintessences',
+        ranked: 'ranked',
+        region: 'region',
+        runes: 'runes',
+        seals: 'seals',
+        search: 'search',
+        searchChampions: 'search champions',
+        searchGame: 'search game',
+        searchGameHelpText: 'Search a game in real time, inform yourself of your opponents: level runes, league, division, wins...',
+        searchSummoner: 'search summoner',
+        searchSummonerHelpText: 'Access to summoner profile, inform yourself of his ranked performance, history, runes...',
+        select: 'select',
+        selectLanguage: 'Select Language',
+        selectRegion: 'Select Region',
+        send: 'send',
+        settings: 'settings',
+        summary: 'summary',
+        summonerName: 'summoner name',
+        utility: 'utility',
+        victories: 'victories',
+        itWin: 'win',
+        itLose: 'lose',
+        regions: {
+          na: 'North America',
+          euw: 'EU West',
+          eune: 'EU Nordic & East',
+          lan: 'Latin America North',
+          las: 'Latin America South', 
+          br: 'Brazil',
+          ru: 'Russia',
+          tr: 'Turkey',
+          oce: 'Oceania',
+          kr: 'Republic of Korea'
+        },
+        toast: {
+          selectOneRegion: 'Select a Region',
+          selectOneLanguage: 'Select a Language',
+          loading: 'Loading...',
+          voteAdded: 'Vote Added',
+          insertAnSummonerName: 'Insert a Summoner Name',
+          connectServerError: 'Connection Server Error',
+          selectTwoChampions: 'Select two champions'
+        },
+        battleTypes: {
+          farming: 'Best farm',
+          killing: 'Brdt killing',
+          early: 'Best early-game',
+          late: 'Best late-game'
+        },
+        gameSubTypes: {
+          NORMAL: 'Normal',
+          NORMAL_3x3: 'Normal 3v3',
+          ARAM_UNRANKED_5x5: 'Aram',
+          BOT: 'Bots',
+          BOUT_3X3: 'Bots 3v3',
+          RANKED_SOLO_5x5: 'Ranked Solo 5v5',
+          RANKED_TEAM_3x3: 'Ranked Team 3v3',
+          RANKED_TEAM_5x5: 'Ranked Team 5v5',
+          ONEFORALL_5x5: 'One for All',
+          FIRSTBLOOD_1x1: 'First Blood 1v1',
+          FIRSTBLOOD_2x2: 'First Blood 2v2',
+          SR_6x6: 'Hexakill',
+          CAP_5x5: 'Team Builder 5v5',
+          URF: 'Urf',
+          URF_BOT: 'Urf Bots',
+          NIGHTMARE_BOT: 'Nightmare Bot',
+          ASCENSION: 'Ascension',
+          HEXAKILL: 'Hexakill',
+          KING_PORO: 'King Poro'
+        },
+        gameQueueConfigIds: {
+          '0': 'Custom',
+          '2': 'Normal 5v5',
+          '7': 'Bots 5v5',
+          '31': 'Bots Intro',
+          '32': 'Bots Beginner',
+          '33': 'Bots Intermediate',
+          '8': 'Normal 3v3',
+          '14': 'Normal 5v5',
+          '16': 'Dominion 5v5',
+          '17': 'Dominion 5v5',
+          '25': 'Dominion Bots 5v5',
+          '4': 'Ranked Solo 5v5',
+          '9': 'Ranked Solo 3v3',
+          '6': 'Ranked Solo 5v5',
+          '41': 'Ranked Team 3v3',
+          '42': 'Ranked Team 5v5',
+          '52': 'Twisted Treeline Bots',
+          '61': 'Team Builder 5v5',
+          '65': 'Aram 5v5',
+          '70': 'One for All',
+          '72': 'First Blood 1v1',
+          '73': 'First Blood 2v2',
+          '75': 'Hexakill',
+          '76': 'Urf',
+          '83': 'Urf Bots',
+          '91': 'Nightmare Bots Rank1',
+          '92': 'Nightmare Bots Rank2',
+          '93': 'Nightmare Bots Rank3',
+          '96': 'Ascension',
+          '98': 'Hexakill',
+          '300': 'King Poro'
+        },
+        maps: {
+          '1': 'Summoner\'s Rift',
+          '2': 'Summoner\'s Rift',
+          '3': 'The Proving Grounds',
+          '4': 'Twisted Treeline',
+          '8': 'The Crystar Scar',
+          '10': 'Twisted Treeline',
+          '11': 'Summoner\'s Rift',
+          '12': 'Howling Abyss'
+        }
+      },
+
+      es: {
+        profile: 'perfil',
+        attack: 'ataque',
+        bans: 'baneos',
+        blueTeam: 'equipo azul',
+        champions: 'campeones',
+        change: 'cambiar',
+        close: 'cerrar',
+        comingSoon: 'pronto',
+        counterpicks: 'counterpicks',
+        counterpicksHelpText: 'Informate de los mejores counterpicks, vota por ellos para posicionar una mejor informacion',
+        defeats: 'derrotas', 
+        defense: 'defensa',
+        fastSearch: 'búsqueda rapida',
+        fastSearchHelpText: 'Aquí se almacenan tus ultimas busquedas para acceder rapidamente a ellas.',
+        games: 'juegos',
+        glyphs: 'gilfos',
+        history: 'historial',
+        language: 'lenguaje',
+        league: 'liga',
+        leaguePoints: 'puntos de liga',
+        level: 'nivel',
+        marks: 'marcas',
+        masteries: 'maestrias',
+        performance: 'desempeño',
+        promotion: 'promoción',
+        purpleTeam: 'equipo purpura',
+        quintessences: 'quintaesencias',
+        ranked: 'clasificatoria',
+        region: 'region',
+        runes: 'runas',
+        seals: 'sellos',
+        search: 'buscar',
+        searchChampions: 'buscar campeones',
+        searchGame: 'buscar juego',
+        searchGameHelpText: 'Busca un juego en tiempo real, informate de tus oponentes: nivel, runas, liga, division, victorias...',
+        searchSummoner: 'buscar invocador',
+        searchSummonerHelpText: 'Accede al perfil de algún invocador, informate de su desempeño en ranked, historial, runas...',
+        select: 'seleccionar',
+        selectLanguage: 'Seleccionar lenguaje',
+        selectRegion: 'Seleccionar region',
+        send: 'enviar',
+        settings: 'opciones',
+        summary: '',
+        summary: 'resumen',
+        summonerName: 'nombre de invocador',
+        utility: 'utilidad',
+        victories: 'victorias',
+        leave: 'salir',
+        itWin: 'gana',
+        itLose: 'pierde',
+        regions: {
+          na: 'Norteamérica',
+          euw: 'Europa Oeste',
+          eune: 'Europa Nórdica y Este',
+          lan: 'Latinoamérica Norte',
+          las: 'Latinoamérica Sur', 
+          br: 'Brazil',
+          ru: 'Rusia',
+          tr: 'Turquía',
+          oce: 'Oceania',
+          kr: 'Republica de Corea'
+        },
+        toast: {
+          selectOneRegion: 'Seleccione una region',
+          selectOneLanguage: 'Seleccione un lenguaje',
+          loading: 'Cargando...',
+          voteAdded: 'Voto agregado',
+          insertAnSummonerName: 'Ingrese un nombre de invocador',
+          connectServerError: 'Error al conectar con el servidor',
+          selectTwoChampions: 'Seleccione dos campeones'
+        },
+        battleTypes: {
+          farming: 'Gana farmeando',
+          killing: 'Consigue mas asesinatos',
+          early: 'Tiene mejor early-game',
+          late: 'Tiene mejor late-game'
+        },
+        gameSubTypes: {
+          NORMAL: 'Normal',
+          NORMAL_3x3: 'Normal 3v3',
+          ARAM_UNRANKED_5x5: 'Aram',
+          BOT: 'Bots',
+          BOUT_3X3: 'Bots 3v3',
+          RANKED_SOLO_5x5: 'Clasificatoria Solo 5v5',
+          RANKED_TEAM_3x3: 'Clasificatoria en Equipo 3v3',
+          RANKED_TEAM_5x5: 'Clasificatoria en Equipo 5v5',
+          ONEFORALL_5x5: 'Uno para todos',
+          FIRSTBLOOD_1x1: 'First Blood 1v1',
+          FIRSTBLOOD_2x2: 'First Blood 2v2',
+          SR_6x6: 'Hexakill',
+          CAP_5x5: 'Creador de Equipos 5v5',
+          URF: 'Urf',
+          URF_BOT: 'Urf Bots',
+          NIGHTMARE_BOT: 'Bots Pesadilla',
+          ASCENSION: 'Ascension',
+          HEXAKILL: 'Hexakill',
+          KING_PORO: 'Rey Poro'
+        },
+        gameQueueConfigIds: {
+          '0': 'Personalizada',
+          '2': 'Normal 5v5',
+          '7': 'Bots 5v5',
+          '31': 'Bots Introductorio',
+          '32': 'Bots Faciles',
+          '33': 'Bots Intermedios',
+          '8': 'Normal 3v3',
+          '14': 'Normal 5v5',
+          '16': 'Dominion 5v5',
+          '17': 'Dominion 5v5',
+          '25': 'Dominion Bots 5v5',
+          '4': 'Clasificatoria Solo 5v5',
+          '9': 'Clasificatoria Solo 3v3',
+          '6': 'Clasificatoria Solo 5v5',
+          '41': 'Clasificatoria Team 3v3',
+          '42': 'Clasificatoria Team 5v5',
+          '52': 'Bosque Retorcido Bots',
+          '61': 'Creador de Equipos 5v5',
+          '65': 'Aram 5v5',
+          '70': 'Uno para Todos',
+          '72': 'First Blood 1v1',
+          '73': 'First Blood 2v2',
+          '75': 'Hexakill',
+          '76': 'Urf',
+          '83': 'Urf Bots',
+          '91': 'Bots Pesadilla Rank1',
+          '92': 'Bots Pesadilla Rank2',
+          '93': 'Bots Pesadilla Rank3',
+          '96': 'Ascension',
+          '98': 'Hexakill',
+          '300': 'Rey Poro'
+        },
+        maps: {
+          '1': 'La Grieta del Invocador',
+          '2': 'La Grieta del Invocador',
+          '3': 'The Proving Grounds',
+          '4': 'El Bosque Retorcido',
+          '8': 'La Cicatriz de Cristal',
+          '10': 'El Bosque Retorcido',
+          '11': 'La Grieta del Invocador',
+          '12': 'El Abismo de los Lamentos'
+        }
+      }
+    };
+
+    Polymer({
+      ready: function () {
+        window.mostachoI18n = this;
+        this.mostachoUserConfig = window.mostachoUserConfig;
+      },
+
+      init: function (config) {
+        return new Promise(function (resolve, reject) {
+          this.setLanguage(this.mostachoUserConfig.getConfig('language'))
+            .then(function () {
+              resolve();
+            })
+        }.bind(this))
+      },
+
+      openSelector: function () {
+        this.$.dialog.open();
+      },
+
+      setLanguage: function (language) {
+        return new Promise(function (resolve, reject) {
+          this.strings = _strings[language];
+          this.mostachoUserConfig.setConfig('language', language)
+          resolve();
+        }.bind(this))
+      },
+
+      setStrings: function (language) {
+        this.strings = _strings[language];
+      }
+    })
+
+  })();
+  </script>
+</polymer-element>

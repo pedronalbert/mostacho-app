@@ -1,0 +1,89 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-league" attributes="summoner league">
+  <template>
+    <link rel="stylesheet" href="summoners-league.css" />
+    
+    <div class="container">
+      <div class="head">
+        <div class="leagueName">
+          <span>{{league.name}}</span>
+        </div>
+        <div class="dropdown">
+          <paper-dropdown-menu id="dropDown" label="Division I">
+            <paper-dropdown class="dropdown">
+                <core-menu selectedItem="{{divisionSelected}}" class="menu">
+                    <paper-item data-division="I">Division I</paper-item>
+                    <paper-item data-division="II">Division II</paper-item>
+                    <paper-item data-division="III">Division III</paper-item>
+                    <paper-item data-division="IV">Division IV</paper-item>
+                    <paper-item data-division="V">Division V</paper-item>
+                </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>
+        </div>
+      </div>
+
+      <template repeat="{{entry in leagueEntries}}">
+          <div class="item {{ {active: entry.playerOrTeamId == summoner.id} | tokenList }}">
+            <div class="info">
+              <div class="row">
+                <div class="name">{{entry.playerOrTeamName}}</div>
+                <div class="stats">
+                  <div class="wins">
+                    {{entry.wins}}
+                  </div>
+
+                  <div class="loses">
+                    {{entry.losses}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="points">{{i18n.strings.leaguePoints}}: <span>{{entry.leaguePoints}}</span></div>
+                <template if="{{entry.miniSeries}}">
+                  <ranked-miniseries progress="{{entry.miniSeries.progress}}">
+                  </ranked-miniseries>
+                </template>
+              </div>
+            </div>
+          </div>
+      </template>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          this.leagueEntries = [];
+        },
+
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+        },
+
+        divisionSelectedChanged: function (oldVal, newVal) {
+          var division = newVal.getAttribute('data-division');
+
+          return this.filterDivision(division)
+        },
+
+        filterDivision: function (division) {
+          this.leagueEntries = _.filter(this.league.entries, function (entry) {
+            return entry.division === division;
+          });
+
+          this.leagueEntries = _.sortBy(this.leagueEntries, 'leaguePoints').reverse();
+        },
+
+        leagueChanged: function () {
+          this.summoner.id = _(this.summoner.id).toString();
+          entry = _.find(this.league.entries, { playerOrTeamId: this.summoner.id });
+          this.$.dropDown.setAttribute('label', 'Division ' + entry.division);
+          this.filterDivision(entry.division);
+        }
+      });
+    })();
+  </script>
+</polymer-element>

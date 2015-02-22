@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  .container {
+    padding: 0.5rem 0rem;
+    .champions {
+      position: relative;
+      display: flex;
+      padding: 0px;
+      champion-selector {
+        flex: 1;
+        &:first-child::shadow .container {
+          border-color: #2196f3;
+          .selected .face {
+            border-color: #2196f3;
+          }
+        }
+        &:last-child::shadow .container {
+          border-color: #9c27b0;
+          .selected {
+            flex-direction: row-reverse;
+            .name {
+              text-align: right;
+              padding: 0px 10px 0px 0px;
+            }
+            .face {
+              border-color: #9c27b0;
+            }
+          }
+        }
+      }
+      .vs {
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        line-height: 25px;
+        font-weight: 900;
+        color: #fff;
+        margin: auto;
+        border-radius: 50%;
+        background-color: #d23f31;
+      }
+    }
+    .battles {
+      margin-top: 0.6rem;
+      .battle {
+        display: flex;
+        border-top: 1px solid rgba(0, 0, 0, 0.3);
+        height: 35px;
+        &:last-child {
+          border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+        }
+        .title {
+          padding: 0rem 0.5rem;
+          flex: 1;
+          display: flex;
+          text-align: center;
+          justify-content: center;
+          align-items: center;
+          span {
+            font-size: 0.8rem;
+          }
+        }
+        .input {
+          width: 50px;
+          text-align: center;
+          height: 35px;
+          line-height: 35px;
+          &:first-child {
+            border-right: 1px solid rgba(0, 0, 0, 0.3);
+            > paper-checkbox::shadow #checkboxContainer #checkbox.checked {
+              background-color: #2196f3;
+              border-color: #2196f3;
+            }
+          }
+          &:last-child {
+            border-left: 1px solid rgba(0, 0, 0, 0.3);
+            > paper-checkbox::shadow #checkboxContainer #checkbox.checked {
+              background-color: #9c27b0;
+              border-color: #9c27b0;
+            }
+          }
+        }
+      }
+    }
+  }
+}

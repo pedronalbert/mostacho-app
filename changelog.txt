@@ -1,0 +1,8 @@
+Cambios:
+-Hechizos de invocador en la partida actual
+-Correccion de bug al buscar un invocador
+-Correccion de bug al buscar las partidas recientes de un invocador
+-Nivel alcanzado en los juegos recientes
+-Muestra el tipo y mapa de los juegos recientes
+-items comprados en los juegos recientes
+-bug de gana y pierde en counters

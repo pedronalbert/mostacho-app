@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  core-toolbar {
+    background-color: #3f51b5;
+    color: #fff;
+    font-size: 1rem;
+    text-transform: capitalize;
+    box-shadow: 0 0 0.3rem #000;
+  }
+  .content .item {
+    padding: 0.5rem 1.2rem;
+    display: flex;
+    height: 3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    .icon {
+      padding: 0 1rem 0 0;
+      display: flex;
+      align-items: center;
+    }
+    .text {
+      flex: 1;
+      text-transform: capitalize;
+      color: #333;
+      line-height: 3rem;
+      font-size: 1rem;
+    }
+    .action {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      paper-button {
+        color: #7583cf;
+      }
+    }
+  }
+}

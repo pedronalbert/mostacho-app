@@ -1,0 +1,115 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-runes-page" attributes="summoner region">
+    <template>
+    <link rel="stylesheet" href="summoners-runes-page.css" />
+
+    <core-toolbar>
+      <paper-icon-button on-tap="{{goBack}}" icon="mdi:arrow-left"></paper-icon-button>
+    </core-toolbar>
+
+    <summoners-header summoner="{{summoner}}" region="{{region}}">
+    </summoners-header>
+
+    <paper-tabs scrollable selected="{{tabSelected}}">
+        <template repeat="{{page in summoner.pages}}">
+          <paper-tab>
+            {{page.name}}
+          </paper-tab>
+        </template>
+    </paper-tabs>
+
+    <swipe-pages selected="{{tabSelected}}">
+      <template repeat="{{page in summoner.pages}}">
+        <swipe-page>
+          <rune-page page="{{page}}">
+          </rune-page>
+        </swipe-page>
+      </template>
+    </swipe-pages>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          this.summoner = {};
+        },
+
+        attached: function () {
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.toastService = window.mostachoToastService;
+          this.i18n = window.mostachoI18n;
+          this.routeService = window.mostachoRouteService;
+          this.riotApi = window.riotApi;
+          this.tabSelected = 0;
+
+          this.toastService.show(this.i18n.strings.toast.loading, 80000);
+          this.analyticsService.trackView('SummonerRunes');
+          this.getData();
+        },
+
+        getData: function () {
+          this.riotApi.getSummonerById(this.summonerId, this.region)
+            .then(function (summoner) {
+              this.summoner = summoner;
+              return this.riotApi.getSummonerRunes(this.summoner.id, this.region);
+            }.bind(this))
+            .then(function (pages) {
+              this.summoner.pages = pages[this.summoner.id]['pages'];
+              return this.prepareRunes(this.summoner.pages);
+            }.bind(this))
+            .then(function () {
+              return this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this))
+        },
+
+       prepareRunes: function(pages) {
+            var prepareFind;
+            var staticFind;
+            var runesPrepared = [];
+
+            return new Promise(function (resolve, reject) {
+              window.riotApi.getRunes('lan', 'image')
+                .then(function (staticRunes) {
+                  addAditionalData.call(this, staticRunes); 
+                  resolve();
+                }.bind(this))
+                .catch(function (err) {
+                  reject(err);
+                })
+            }.bind(this))
+
+            function addAditionalData(staticRunes) {
+              _.forEach(this.summoner.pages, function (page) {
+                _.forEach(page.slots, function (slot) {
+                  staticFind = _.find(staticRunes, {'id': slot.runeId});
+                  prepareFind = _.find(runesPrepared, {'id': slot.runeId})
+                  
+                  if(prepareFind) {
+                    prepareFind.amount++;
+                  } else {
+                    staticFind.amount = 1;
+                    runesPrepared.push(staticFind);
+                  }
+                }.bind(this))
+                page.marks = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'red'});
+                page.seals = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'yellow'});
+                page.glyphs = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'blue'});
+                page.quintessences = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'black'});
+                runesPrepared = [];
+              }.bind(this))
+            }
+
+        },
+
+        goBack: function () {
+          return this.routeService.goBack();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

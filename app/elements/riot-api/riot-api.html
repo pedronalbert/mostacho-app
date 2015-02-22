@@ -1,0 +1,403 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="riot-api" attributes="">
+  <template>
+  </template>
+  <script>
+    (function () {
+      var _gamesRecentCahe = 15,
+          _gamesCurrentCache = 5,
+          _summonerCache = 1500;
+
+      Polymer({
+        ready: function () {
+          window.riotApi = this;
+          this.i18n = window.mostachoI18n;
+          this.userConfig = window.mostachoUserConfig;
+        },
+
+        getRunes: function (region, runeListData) {
+          return new Promise(function (resolve, reject) {
+            localforage.getItem('runes')
+              .then(function (runes) {
+                if(_.isNull(runes)) {
+                  getFromServer.call(this);
+                } else {
+                  resolve(runes);
+                }
+              }.bind(this))
+
+              function getFromServer() {
+                Request
+                  .get(BACKEND_URL + '/riot/static-data/runes')
+                  .query({runeListData: runeListData})
+                  .query({region: this.userConfig.getConfig('region')})
+                  .query({user_language: this.userConfig.getConfig('language')})
+                  .end(function (err, res) {
+                    if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                    if(res.body.status === 'success') {
+                      localforage.setItem('runes', res.body.data['runes'])
+                        .then(function () {
+                          return resolve(res.body.data['runes']);
+                        })
+                    } 
+                  }.bind(this))
+              }
+
+          }.bind(this))
+        },
+
+        getChampions: function () {
+          return new Promise(function (resolve, reject) {
+
+            localforage.getItem('champions')
+              .then(function (champions) {
+                if(_.isNull(champions)) {
+                  getFromServer.call(this);
+                } else {
+                  resolve(champions);
+                }
+              }.bind(this))
+            
+            function getFromServer() {
+              Request.get(BACKEND_URL + '/riot/static-data/champions')
+                .query({region: this.userConfig.getConfig('region')})
+                .query({user_language: this.userConfig.getConfig('language')})
+                .end(function (err, res) {
+                  if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                  if(res.body.status === 'success') {
+                    localforage.setItem('champions', res.body.data.champions);
+                    resolve(res.body.data.champions);
+                  } else {
+                    reject(res.body.message);
+                  }
+                }.bind(this))
+            }
+
+          }.bind(this))
+        },
+
+        getSummonerByName: function (name, region) {
+          var formatName = name.toLowerCase().replace(/\s+/g, '');
+
+          return new Promise(function (resolve, reject) {
+            localforage.getItem(region + '_summoner_by_name_' + formatName)
+              .then(function (summoner) {
+                if(_.isNull(summoner)) {
+                  getFromServer.call(this);
+                } else {
+                  validateRequestDate.call(this, summoner);
+                }
+              }.bind(this))
+
+
+            function getFromServer() {
+              Request
+                .post(BACKEND_URL + '/riot/summoner/by-name?region=' + region)
+                .send({name: name})
+                .query({user_language: this.userConfig.getConfig('language')})
+                .end(function (err, res) {
+                  if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                  if(res.body.status === 'error') return reject(res.body.message);
+
+                  if(res.body.status === 'success') {
+                    saveOnStorage.call(this, res.body.data);
+                    return resolve(res.body.data);
+                  }
+                }.bind(this))
+            }
+
+            function saveOnStorage(data) {
+              var requested_at = moment().format().toString();
+
+              localforage.setItem(region + '_summoner_by_name_' + formatName, data)
+                .then(function () {})
+              localforage.setItem(region + '_summoner_by_name_' + formatName + '_requested_at', requested_at)
+                .then(function () {})
+            }
+
+            function validateRequestDate(summoner) {
+              var now = moment();
+
+              localforage.getItem(region + '_summoner_by_name_' + formatName + '_requested_at')
+                .then(function (requested_at) {
+                  if(_.isNull(requested_at)) {
+                    return getFromServer.call(this);
+                  } else {
+                    var requested_at = moment(requested_at, moment.ISO_8601);
+                    
+                    var diff = now.diff(requested_at, 'minutes');
+                    
+                    if(diff > _summonerCache) {
+                      getFromServer.call(this);
+                    } else {
+                      return resolve(summoner);
+                    }   
+                  }
+                }.bind(this))
+            }
+
+          }.bind(this))
+        },
+
+        getSummonerById: function (id, region) {
+
+          return new Promise(function (resolve, reject) {
+            localforage.getItem(region + '_summoner_by_id_' + id)
+              .then(function (summoner) {
+                if(_.isNull(summoner)) {;
+                  getFromServer.call(this);
+                } else {
+                  validateRequestDate.call(this, summoner);
+                }
+              }.bind(this))
+
+
+            function getFromServer() {
+              Request
+                .get(BACKEND_URL + '/riot/summoner/by-id/' + id +'?region=' + region)
+                .query({user_language: this.userConfig.getConfig('language')})
+                .end(function (err, res) {
+                  if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                  if(res.body.status === 'error') return reject(res.body.message);
+
+                  if(res.body.status === 'success') {
+                    saveOnStorage(res.body.data);
+                    return resolve(res.body.data);
+                  }
+                }.bind(this))
+            }
+
+            function saveOnStorage(data) {
+              var requested_at = moment().format().toString();
+
+              localforage.setItem(region + '_summoner_by_id_' + id, data)
+                .then(function () {})
+              localforage.setItem(region + '_summoner_by_id_' + id + '_requested_at', requested_at)
+                .then(function () {})
+            }
+
+            function validateRequestDate(summoner) {
+              var now = moment();
+
+              localforage.getItem(region + '_summoner_by_id_' + id + '_requested_at')
+                .then(function (requested_at) {
+                  if(_.isNull(requested_at)) {
+                    return getFromServer.call(this);
+                  } else {
+                    var requested_at = moment(requested_at, moment.ISO_8601);
+                    
+                    var diff = now.diff(requested_at, 'minutes');
+                    
+                    if(diff > _summonerCache) {
+                      getFromServer.call(this);
+                    } else {
+                      return resolve(summoner);
+                    }   
+                  }
+                }.bind(this))
+            }
+
+          }.bind(this))
+        },
+
+        getSummonerLeagueEntry: function (ids, region, season) {
+          return new Promise(function (resolve, reject) {
+            Request
+              .get(BACKEND_URL + '/riot/summoners/' + ids + '/league/entry')
+              .query({user_language: this.userConfig.getConfig('language')})
+              .query({region: region})
+              .query({season: season})
+              .end(function (err, res) {
+                if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                if(res.body.status === 'success') return resolve(res.body.data);
+                if(res.body.status === 'error') return reject(res.body.message);
+              }.bind(this))   
+          }.bind(this));
+        },
+
+        getSummonerGamesRecent: function (id, region) {
+          return new Promise(function (resolve, reject) {
+            localforage.getItem(region + '_summoner_' + id + '_games_recent')
+              .then(function (games) {
+                if(_.isNull(games)) {
+                  getFromServer.call(this)
+                } else {
+                  validateRequestDate.call(this, games)
+                }
+              }.bind(this))
+
+            function getFromServer() {
+              console.log('getting from server');
+              Request
+                .get(BACKEND_URL + '/riot/summoner/' + id + '/games/recent')
+                .query({region: region})
+                .query({user_language: this.userConfig.getConfig('language')})
+                .end(function (err, res) {
+                  if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                  if(res.body.status === 'success') {
+                    saveOnStorage(res.body.data);
+                    return resolve(res.body.data);
+                  } 
+                  if(res.body.status === 'error') return reject(res.body.message);
+                }.bind(this))     
+            }
+
+            function saveOnStorage(data) {
+              var requested_at = moment().format().toString();
+
+              localforage.setItem(region + '_summoner_' + id + '_games_recent', data)
+                .then(function (gamesRecent) {
+                  console.log(gamesRecent);
+                })
+              localforage.setItem(region + '_summoner_' + id + '_games_recent_requested_at', requested_at)
+                .then(function () {
+                })
+            }
+
+            function validateRequestDate(games) {
+              var now = moment();
+
+              localforage.getItem(region + '_summoner_' + id + '_games_recent_requested_at')
+                .then(function (requested_at) {
+                  if(_.isNull(requested_at)) {
+                    return getFromServer.call(this);
+                  } else {
+                    var requested_at = moment(requested_at, moment.ISO_8601);
+                    
+                    var diff = now.diff(requested_at, 'minutes');
+                    
+                    if(diff > _gamesRecentCahe) {
+                      getFromServer.call(this);
+                    } else {
+                      return resolve(games);
+                    }   
+                  }
+                }.bind(this))
+            }
+
+
+          }.bind(this));
+        },
+
+        getSummonerMasteries: function (ids, region) {
+          return new Promise(function (resolve, reject) {
+            Request
+              .get(BACKEND_URL + '/riot/summoners/' + ids + '/masteries')
+              .query({user_language: this.userConfig.getConfig('language')})
+              .query({region: region})
+              .end(function (err, res) {
+                if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                if(res.body.status === 'success') return resolve(res.body.data);
+                if(res.body.status === 'error') return reject(res.body.message);
+              }.bind(this))   
+          }.bind(this));
+        },
+
+        getSummonerRunes: function (ids, region) {
+          return new Promise(function (resolve, reject) {
+            Request
+              .get(BACKEND_URL + '/riot/summoners/' + ids + '/runes')
+              .query({region: region})
+              .query({user_language: this.userConfig.getConfig('language')})
+              .end(function (err, res) {
+                if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                if(res.body.status === 'success') return resolve(res.body.data);
+                if(res.body.status === 'error') return reject(res.body.message);
+              }.bind(this))   
+          }.bind(this));
+        },
+
+        getSummonerLeague: function (ids, region) {
+          return new Promise(function (resolve, reject) {
+            Request
+              .get(BACKEND_URL + '/riot/summoners/' + ids + '/league')
+              .query({region: region})
+              .query({user_language: this.userConfig.getConfig('language')})
+              .end(function (err, res) {
+                if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                if(res.body.status === 'success') return resolve(res.body.data);
+                if(res.body.status === 'error') return reject(res.body.message);
+              }.bind(this))   
+          }.bind(this));
+        },
+
+        getSummonerStatsRanked: function (id, region, season) {
+          return new Promise(function (resolve, reject) {
+            Request
+              .get(BACKEND_URL + '/riot/summoner/' + id + '/stats/ranked')
+              .query({region: region})
+              .query({season: season})
+              .query({user_language: this.userConfig.getConfig('language')})
+              .end(function (err, res) {
+                if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                if(res.body.status === 'success') return resolve(res.body.data);
+                if(res.body.status === 'error') return reject(res.body.message);
+              }.bind(this))   
+          }.bind(this));
+        },
+
+        getSummonerGameCurrent: function(region, summonerId) {
+          return new Promise(function (resolve, reject) {
+          
+            localforage.getItem('game_current_' + region + '_' + summonerId)
+              .then(function (game) {
+                if(_.isNull(game)) {
+                  getFromServer.call(this);
+                } else {
+                  verificateDifference.call(this, game);
+                }
+              }.bind(this))
+
+            function getFromServer() {
+              Request
+                .get(BACKEND_URL + '/riot/summoner/'+ summonerId + '/game/current')
+                .query({region: region})
+                .query({user_language: this.userConfig.getConfig('language')})
+                .end(function (err, res) {
+                  if(err) return reject(this.i18n.strings.toast.connectServerError);
+
+                  if(res.body.status === 'success') {
+                    saveOnStorage(res.body.data);
+                  } 
+
+                  if(res.body.status === 'error') return reject(res.body.message);
+                }.bind(this))
+            }
+
+            function saveOnStorage(game) {
+              game.requested_at = moment().format().toString();
+              localforage.setItem('game_current_' + region + '_' + summonerId, game)
+              .then(function () {
+                resolve(game);
+              });
+            }
+
+            function verificateDifference(game) {
+              var now = moment();
+              var requested = moment(game.requested_at, moment.ISO_8601);
+              var diff = now.diff(requested, 'minutes');
+              
+              if(diff > _gamesCurrentCache) {
+                getFromServer.call(this);
+              } else {
+                resolve(game);
+              }
+            }
+          
+          }.bind(this))
+        }
+      });
+    })();
+  </script>
+</polymer-element>

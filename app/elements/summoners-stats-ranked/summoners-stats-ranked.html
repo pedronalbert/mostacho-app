@@ -1,0 +1,90 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-stats-ranked" attributes="summoner region">
+  <template>
+    <link rel="stylesheet" href="summoners-stats-ranked.css" />
+
+    <div class="container">
+      <template repeat="{{champion in champions}}">
+        <div class="item">
+          <div class="image">
+            <img src="images/champions/{{champion.id}}.jpg" />
+          </div>
+          <div class="info">
+            <div class="row">
+              <div class="kda">
+                <div class="kills">{{champion.k}}</div>
+                <div class="deaths">{{champion.d}}</div>
+                <div class="assists">{{champion.a}}</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="wins-losses">
+                <div class="games">
+                  <span>{{i18n.strings.games}}: </span>
+                  <span>{{champion.stats.totalSessionsPlayed}}</span>
+                </div>
+                <div class="wins">
+                  <span>{{i18n.strings.victories}}: </span>
+                  <span>{{champion.stats.totalSessionsWon}}</span>
+                </div>
+                <div class="losses">
+                  <span>{{i18n.strings.defeats}}: </span>
+                  <span>{{champion.stats.totalSessionsLost}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          this.champions = [];
+        },
+
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+          this.riotApi = window.riotApi;
+          this.toastService = window.mostachoToastService;
+        },
+
+        summonerChanged: function () {
+          this.getData();
+        },
+
+        getData: function () {
+          this.riotApi.getSummonerStatsRanked(this.summoner.id, this.region, 'SEASON2015')
+            .then(function (stats) {
+              this.championsStats = stats['champions'];
+              this.calculateKda();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this));
+        },
+
+        calculateKda: function () {
+
+          _.forEach(this.championsStats, function (champion) {
+
+            champion.k = (champion.stats.totalChampionKills / champion.stats.totalSessionsPlayed).toFixed(2);
+            champion.d = (champion.stats.totalDeathsPerSession / champion.stats.totalSessionsPlayed).toFixed(2);
+            champion.a = (champion.stats.totalAssists / champion.stats.totalSessionsPlayed).toFixed(2);
+
+            if(champion.id !== 0) {
+              this.champions.push(champion);  
+            }
+          }.bind(this))
+
+          this.champions = _.sortBy(this.champions, function (champion) {
+            return champion.stats.totalSessionsPlayed;
+          }).reverse();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

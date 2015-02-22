@@ -1,0 +1,53 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="counters-battles-header" attributes="battle">
+  <template>
+    <link rel="stylesheet" href="counters-battles-header.css"/>
+
+    <core-toolbar id="toolbar">
+      <content select=".toolbar"></content>
+    </core-toolbar>
+
+    <div class="content">
+      <div class="champion">
+        <template if="{{battle.champion.id > 0}}">
+          <img src="images/champions-fonts/{{battle.champion.id}}.jpg"/>
+        </template>
+          <span class="name">{{battle.champion.name}}</span>
+          <div id="championPercent" class="percent">{{battle.championPercent}}</div>
+      </div>
+      <div class="divider">
+      </div>
+      <div class="champion">
+        <template if="{{battle.opponent.id > 0}}">
+          <img src="images/champions-fonts/{{battle.opponent.id}}.jpg"/>
+        </template>
+          <span class="name">{{battle.opponent.name}}</span>
+          <div id="opponentPercent" class="percent">{{battle.opponentPercent}}</div>
+      </div>
+    </div>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        battleChanged: function (oldVal, newVal) {
+          if(!_.isEmpty(newVal)) this.setPercentColors();
+        },
+        
+        setPercentColors: function() {
+          if(this.battle.championPercent > 50) {
+            this.$.championPercent.style.color = '#4CAF50';
+            this.$.opponentPercent.style.color = '#E91E63';
+          }else if(this.battle.championPercent < 50) {
+            this.$.championPercent.style.color = '#E91E63';
+            this.$.opponentPercent.style.color = '#4CAF50';
+          }else {
+            this.$.championPercent.style.color = '#FF9800';
+            this.$.opponentPercent.style.color = '#FF9800';
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

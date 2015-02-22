@@ -1,0 +1,68 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-ranked-page" attributes="summonerId region">
+  <template> 
+    <link rel="stylesheet" href="summoners-ranked-page.css" />
+
+    <core-toolbar>
+      <paper-icon-button on-tap="{{goBack}}" icon="mdi:arrow-left"></paper-icon-button>
+    </core-toolbar>
+
+    <summoners-header summoner="{{summoner}}" region="{{region}}">
+    </summoners-header>
+
+    <paper-tabs selected="{{tabSelected}}">
+      <paper-tab>{{i18n.strings.performance}}</paper-tab>
+      <paper-tab>{{i18n.strings.league}}</paper-tab>
+    </paper-tabs>
+
+    <swipe-pages selected="{{tabSelected}}" nPages="2">
+      <swipe-page>
+        <summoners-stats-ranked summoner="{{summoner}}" region="{{region}}">
+        </summoners-stats-ranked>
+      </swipe-page>
+
+      <swipe-page>
+        <summoners-league summoner="{{summoner}}" league="{{summoner.league[0]}}" >
+        </summoners-league>
+      </swipe-page>
+    </swipe-pages>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        attached: function () {
+          this.i18n = window.mostachoI18n;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.toastService = window.mostachoToastService;
+          this.routeService = window.mostachoRouteService;
+          this.riotApi = window.riotApi;
+
+          this.tabSelected = 0;
+          this.toastService.show(this.i18n.strings.toast.loading, 50000);
+          this.analyticsService.trackView('SummonerRanked');
+          this.getData();
+        },
+
+        getData: function () {
+          this.riotApi.getSummonerById(this.summonerId, this.region)
+            .then(function (summoner) {
+              this.summoner = summoner;
+              return this.riotApi.getSummonerLeague(this.summonerId, this.region);
+            }.bind(this))
+            .then(function (league) {
+              this.summoner.league = league[this.summonerId];
+              return this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this))
+        },
+
+        goBack: function () {
+          this.routeService.goBack();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

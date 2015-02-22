@@ -1,0 +1,105 @@
+:host {
+  display: block;
+  .container {
+    font-size: 0.75rem;
+    .item {
+      display: flex;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      padding: 0.25rem 1rem;
+      .image {
+        width: 3em;
+        height: 3em;
+        position: relative;
+        margin: auto;
+        border-radius: 0.3rem;
+        overflow: hidden;
+        img {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0 0.25rem;
+        text-align: center;
+        text-transform: capitalize;
+        .row {
+          flex: 1;
+          display: flex;
+          .kda {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 0.25rem 0rem;
+            flex: 1;
+            .kills {
+              color: #4caf50;
+              flex: 1;
+              font-size: 0.9rem;
+              font-weight: 100;
+              &::before {
+                content: 'Kills: ';
+                font-size: 0.8rem;
+                color: #000;
+                font-weight: 100;
+              }
+            }
+            .deaths {
+              color: #f44336;
+              flex: 1;
+              font-size: 0.9rem;
+              font-weight: 600;
+              &::before {
+                content: 'Deaths: ';
+                font-size: 0.8rem;
+                color: #000;
+                font-weight: 100;
+              }
+            }
+            .assists {
+              flex: 1;
+              font-size: 0.9rem;
+              font-weight: 600;
+              &::before {
+                content: 'Assits: ';
+                font-size: 0.8rem;
+                font-weight: 100;
+              }
+            }
+          }
+          .wins-losses {
+            flex: 1;
+            display: flex;
+            padding: 0.5em;
+            .wins {
+              flex: 1;
+              span:last-child {
+                color: #4caf50;
+                font-size: 0.8rem;
+                font-weight: 600;
+              }
+            }
+            .losses {
+              flex: 1;
+              span:last-child {
+                color: #f44336;
+                font-size: 0.8rem;
+                font-weight: 600;
+              }
+            }
+            .games {
+              flex: 1;
+              padding: 0rem 0.15rem;
+              span:last-child {
+                font-weight: 600;
+                font-size: 0.8rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

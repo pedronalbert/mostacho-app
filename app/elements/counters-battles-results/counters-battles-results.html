@@ -1,0 +1,37 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="counters-battles-results" attributes="battle">
+  <template>
+    <link rel="stylesheet" href="counters-battles-results.css"/>
+
+    <div class="votes">
+      <template repeat="{{vote in battle.votes}}">
+        <div class="vote">
+          <div class="votes"> 
+            <div class="percent">{{vote.championPercent}}</div>
+            <div class="amount">&#40;{{vote.champion}}&#41;</div>
+          </div>
+          <div class="info">
+            <div class="title"> {{i18n.strings.battleTypes[vote.type]}}</div>
+            <div class="progress"> 
+              <paper-progress value="{{vote.championPercent}}"></paper-progress>
+            </div>
+          </div>
+          <div class="votes">
+            <div class="percent">{{vote.opponentPercent}}</div>
+            <div class="amount">&#40;{{vote.opponent}}&#41;</div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+        }
+      });
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,61 @@
+:host {
+  display: block;
+  paper-fab {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .dialog {
+    position: fixed;
+    right: 3.2rem;
+    bottom: 3.2rem;
+    width: 0;
+    height: 0;
+    background-color: #fff;
+    overflow-y: auto;
+    box-shadow: 0 0 0.3rem #000;
+    .content {
+      padding: 1rem;
+      overflow-y: hidden;
+      color: #333;
+      .title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: auto;
+        padding-bottom: 0.5rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+        text-transform: capitalize;
+      }
+      .item {
+        position: relative;
+        display: flex;
+        padding: 0.5rem 0rem;
+        height: 1.8rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+        line-height: 1.8rem;
+        .region {
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          padding: 0 0.25rem;
+          width: 2.5rem;
+          text-align: center;
+          background-color: #8994d6;
+          color: #fff;
+          border-radius: 0.25rem;
+        }
+        .name {
+          flex: 1;
+          padding: 0 1rem;
+          font-size: 0.9rem;
+        }
+      }
+      .help-text {
+        text-align: justify;
+        font-size: 1rem;
+        padding-top: 0.5rem;
+        text-indent: 0.5rem;
+      }
+    }
+  }
+}

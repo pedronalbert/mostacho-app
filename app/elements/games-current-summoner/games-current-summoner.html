@@ -1,0 +1,108 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="games-current-summoner" attributes="summoner">
+  <template>
+    <link rel="stylesheet" href="games-current-summoner.css" />
+
+    <div class="container">
+      <div class="column">
+        <div class="image">
+          <img src="images/champions/{{summoner.championId}}.jpg" />
+        </div>
+        <div class="spells">
+          <div class="spell">
+            <img src="images/summoner-spell/{{summoner.spell1Id}}.jpg" alt="">
+          </div>
+          <div class="spell">
+            <img src="images/summoner-spell/{{summoner.spell2Id}}.jpg" alt="">
+          </div>
+        </div>
+        <template if="{{summoner.leagueEntry[0].queue == 'RANKED_SOLO_5x5'}}">
+          <div class="tier">
+            <div class="image">
+              <img src="images/tiers/{{summoner.leagueEntry[0].tier}}_{{summoner.leagueEntry[0].entries[0].division}}.png" />
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="column">
+        <div class="head">
+          <div class="name">
+            {{summoner.summonerName}}
+          </div>
+          <paper-button raised data-summoner-id="{{summoner.summonerId}}" on-tap="{{fireOpenSummonerProfile}}">
+            {{i18n.strings.profile}}
+          </paper-button>
+        </div>
+
+        <div class="tier-division">
+          <div class="tier">Tier: <span class="{{summoner.leagueEntry[0].tier}}">{{summoner.leagueEntry[0].tier}}</span></div>
+          <template if="{{ summoner.leagueEntry[0].tier != 'CHALLENGER'}}">
+            <template if="{{summoner.leagueEntry[0].tier != 'MASTER'}}">
+              <template if="{{summoner.leagueEntry[0].entries[0].division != '0'}}">
+                <div class="division">Division: <span>{{summoner.leagueEntry[0].entries[0].division}}</span>
+                </div>     
+              </template>
+            </template>
+          </template>
+        </div>
+        <div class="wins-losses">
+          <div class="wins">
+            {{i18n.strings.victories}}: <span>{{summoner.leagueEntry[0].entries[0].wins}}</span>
+          </div>
+          <div class="losses">
+            {{i18n.strings.defeats}}: <span>{{summoner.leagueEntry[0].entries[0].losses}}</span>
+          </div>
+        </div>
+        <div class="points">
+          {{i18n.strings.leaguePoints}}: <span>{{summoner.leagueEntry[0].entries[0].leaguePoints}}</span>
+        </div>
+        <template if="{{summoner.leagueEntry[0].entries[0].miniSeries}}">
+          <div class="miniseries">
+            <span>{{i18n.strings.promotion}}: </span> 
+            <ranked-miniseries progress="{{summoner.leagueEntry[0].entries[0].miniSeries.progress}}">
+            </ranked-miniseries>
+          </div>
+        </template>
+        <div class="buttons">
+          <div class="runes">
+            <paper-button raised on-tap="{{fireOpenRunes}}">
+              <core-icon icon="mdi:hexagon-outline"></core-icon>
+               {{i18n.strings.runes}}
+            </paper-button>
+          </div>
+          <div class="masteries">
+            <paper-button raised on-tap="{{fireOpenMasteries}}"> 
+              <core-icon icon="mdi:script"></core-icon>
+               {{i18n.strings.masteries}}
+            </paper-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+        },
+        
+        fireOpenMasteries: function () {
+          this.fire('open-masteries', {masteries: this.summoner.masteries});
+        },
+
+        fireOpenRunes: function () {
+          this.fire('open-runes', this.summoner.runes);
+        },
+
+        fireOpenSummonerProfile: function (event) {
+          var summonerId = event.target.getAttribute('data-summoner-id');
+
+          this.fire('open-summoner-profile', summonerId);
+        }
+      });
+    })();
+  </script>
+</polymer-element>

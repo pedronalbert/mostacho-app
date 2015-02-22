@@ -1,0 +1,30 @@
+:host {
+  position: relative;
+  display: block;
+  width: 4.5em;
+  height: 4.5em;
+  margin: 0.2em;
+  overflow: hidden;
+  border-radius: 0.3em;
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  .footer {
+    width: 100%;
+    height: 1.3em;
+    background-color: rgba(0, 0, 0, 0.5);
+    bottom: 0px;
+    position: absolute;
+    .name {
+      line-height: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+      color: #fff;
+      display: block;
+      text-transform: capitalize;
+      font-size: 0.7em;
+    }
+  }
+}

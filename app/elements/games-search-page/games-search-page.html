@@ -1,0 +1,115 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="games-search-page" attributes="">
+  <template>
+    <link rel="stylesheet" href="games-search-page.css" />
+
+    <core-toolbar>
+      <paper-icon-button on-tap="{{goBack}}" icon="mdi:arrow-left"></paper-icon-button>
+      <span flex>{{i18n.strings.searchGame}}</span>
+    </core-toolbar>
+
+    <div class="container">
+      <div class="image">
+        <img src="../../images/others/02.jpg" />
+      </div>
+
+      <div class="inputs">
+        <paper-input id="input" floatingLabel label="{{i18n.strings.summonerName}}" value="{{summonerName}}">
+        </paper-input>
+
+        <div class="dropdown">
+          <paper-dropdown-menu label="{{i18n.strings.region}}">
+            <paper-dropdown class="dropdown">
+                <core-menu selectedItem="{{region}}" class="menu">
+                  <paper-item data-region="na">{{i18n.strings.regions.na}}</paper-item>
+                  <paper-item data-region="euw">{{i18n.strings.regions.euw}}</paper-item>
+                  <paper-item data-region="eune">{{i18n.strings.regions.eune}}</paper-item>
+                  <paper-item data-region="lan">{{i18n.strings.regions.lan}}</paper-item>
+                  <paper-item data-region="las">{{i18n.strings.regions.las}}</paper-item>
+                  <paper-item data-region="br">{{i18n.strings.regions.br}}</paper-item>
+                  <paper-item data-region="ru">{{i18n.strings.regions.ru}}</paper-item>
+                  <paper-item data-region="tr">{{i18n.strings.regions.tr}}</paper-item>
+                  <paper-item data-region="oce">{{i18n.strings.regions.oce}}</paper-item>
+                  <paper-item data-region="kr">{{i18n.strings.regions.kr}}</paper-item>
+                </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>
+        </div>
+
+        <div class="button">
+          <paper-button raised on-tap="{{searchGame}}">
+            {{i18n.strings.search}}
+          </paper-button>
+        </div>
+      </div>
+    </div>
+
+    <!--Floats -->
+    <last-summoners-search-button on-selected="{{searchGame}}" id="lastSearches">
+    </last-summoners-search-button>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.toastService = window.mostachoToastService;
+          this.routeService = window.mostachoRouteService;
+          this.riotApi = window.riotApi;
+
+          this.analyticsService.trackView('GameSearchPage');
+        },
+
+        searchGame: function (event, detail, target) {
+          var region, name;
+
+          if(target.tagName === 'PAPER-BUTTON') {
+            this.$.input.$.decorator.isInvalid = false;
+            target.setAttribute('disabled', '');
+            name = this.summonerName.toLowerCase();
+
+            if(_.isEmpty(this.summonerName)) {
+              target.removeAttribute('disabled');
+              this.$.input.$.decorator.isInvalid = true;
+              return this.toastService.show(this.i18n.strings.toast.insertAnSummonerName);
+            }
+
+            if(_.isUndefined(this.region)) {
+              target.removeAttribute('disabled');
+              return this.toastService.show(this.i18n.strings.toast.selectOneRegion);
+            }
+
+            region = this.region.getAttribute('data-region');
+          } else {
+            name = detail.name;
+            region = detail.region;
+          }
+
+          this.analyticsService.trackEvent('GameSearch', name + ' ' + region);
+          this.riotApi.getSummonerByName(name, region)
+            .then(function (summoner) {
+              this.summoner = summoner;
+              summoner.region = region;
+              this.$.lastSearches.unshiftSummoner(summoner);
+              return this.riotApi.getSummonerGameCurrent(region, this.summoner.id);
+            }.bind(this))
+            .then(function (game) {
+              target.removeAttribute('disabled');
+              return this.routeService.go('/games/current/' + this.summoner.id + '?region=' + region);   
+            }.bind(this))
+            .catch(function (err) {
+              target.removeAttribute('disabled');
+              this.toastService.show(err);
+            }.bind(this));
+        },
+
+        goBack: function () {
+          this.routeService.goBack();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

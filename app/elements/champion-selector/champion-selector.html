@@ -1,0 +1,72 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="champion-selector" attributes="champion">
+  <template>
+    <link rel="stylesheet" href="champion-selector.css"/>
+    
+    <div class="container">
+      <div on-tap="{{toggleSelector}}" class="selected">
+        <div class="face">
+          <template if="{{champion.id > 0}}">
+            <img src="images/champions/{{champion.id}}.jpg" alt="{{champion.name}}"/>
+          </template>
+        </div>
+        <div class="name">{{champion.name}}</div>
+      </div>
+
+      <div id="selector" class="selector">
+        <template repeat="{{champion in champions}}">
+          <div data-champion-id="{{champion.id}}" on-tap="{{selectChampion}}" class="champion">
+            <div class="face"><img src="images/champions/{{champion.id}}.jpg" alt="{{champion.name}}"/></div>
+            <div class="name">{{champion.name}}</div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        attached: function() {
+          this.riotApi = window.riotApi;
+          this.toastService = window.mostachoToastService;
+          this.getChampions();
+        },
+
+        getChampions: function() {
+          this.riotApi.getChampions()
+            .then(function (champions) {
+              this.champions = champions;
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this))
+        },
+
+        toggleSelector: function() {
+          var selector = this.$.selector;
+
+          if (!selector.hasAttribute('open')) {
+            Velocity(selector, 'slideDown', 400);
+            selector.setAttribute('open', '');
+          } else {
+            Velocity(selector, 'slideUp', 400);
+            selector.removeAttribute('open');
+          }
+        },
+
+        selectChampion: function(e, sender, target) {
+          var championId = parseInt(target.getAttribute('data-champion-id'));
+
+          this.champion = _.find(this.champions, {id: championId});
+          this.toggleSelector();
+        },
+
+
+        clean: function() {
+          this.champion = '';
+        }
+      });
+    })();
+  </script>
+</polymer-element>

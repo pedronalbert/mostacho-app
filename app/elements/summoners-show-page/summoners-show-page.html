@@ -1,0 +1,127 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-show-page" attributes="summonerId region">
+  <template>
+    <link rel="stylesheet" href="summoners-show-page.css" />
+
+    <core-toolbar>
+      <paper-icon-button on-tap="{{goBack}}" icon="mdi:arrow-left"></paper-icon-button>
+    </core-toolbar>
+
+    <summoners-header summoner="{{summoner}}" region="{{region}}">
+    </summoners-header>
+
+    <paper-tabs selected="{{tabSelected}}">
+      <paper-tab>{{i18n.strings.ranked}}</paper-tab>
+      <paper-tab>{{i18n.strings.history}}</paper-tab>
+    </paper-tabs>
+
+    <swipe-pages selected="{{tabSelected}}">
+      <swipe-page>
+        <template repeat="{{entry in summoner.leagueEntry}}">
+          <div class="entry-title">
+            {{i18n.strings.gameSubTypes[entry.queue]}}: {{entry.entries[0].playerOrTeamName}}
+          </div>
+
+          <summoners-league-entry ranked="{{entry}}">
+          </summoners-league-entry>
+        </template>
+      </swipe-page>
+
+      <swipe-page>
+        <template repeat="{{game in summoner.gamesRecent}}">
+          <summoners-game game="{{game}}">
+          </summoners-game>
+        </template>
+      </swipe-pages>
+    </swipe-pages>
+
+    <div id="fabs">
+      <paper-fab on-tap="{{goToRanked}}" icon="mdi:trophy"></paper-fab>
+      <paper-fab on-tap="{{goToRunes}}" icon="mdi:hexagon-outline"></paper-fab>
+      <paper-fab on-tap="{{goToMasteries}}" icon="mdi:script"></paper-fab>
+      <paper-fab toastable id="fab" on-tap="{{toggleFab}}" icon="mdi:eye"></paper-fab>
+    </div>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          this.summoner = {};
+          this.tabSelected = 0;
+        },
+        
+        attached: function () {
+          this.i18n = window.mostachoI18n;
+          this.toastService = window.mostachoToastService;
+          this.riotApi = window.riotApi;
+          this.routeService = window.mostachoRouteService;
+          this.analyticsService = window.mostachoAnalyticsService;
+
+          this.analyticsService.trackView('SummonerShow');
+          this.toastService.show(this.i18n.strings.toast.loading, 80000);
+          this.getData();
+        },
+
+        getData: function () {
+          this.riotApi.getSummonerById(this.summonerId, this.region)
+            .then(function (summoner) {
+              this.summoner = summoner;
+              return this.riotApi.getSummonerLeagueEntry(this.summoner.id, this.region);
+            }.bind(this)) 
+            .then(function (leagueEntry) {
+              this.summoner.leagueEntry = leagueEntry[this.summoner.id];
+              return this.riotApi.getSummonerGamesRecent(this.summoner.id, this.region, 'SEASON2015');
+            }.bind(this))
+            .then(function (gamesRecent) {
+              this.summoner.gamesRecent = gamesRecent; 
+              return this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this))
+        },
+
+        toggleFab: function () {
+          var fabPrincipal = this.$.fabs.querySelector('paper-fab:last-child');
+          var fabMasteries = this.$.fabs.querySelector('paper-fab[icon="mdi:script"');
+          var fabRunes = this.$.fabs.querySelector('paper-fab[icon="mdi:hexagon-outline"]');
+          var fabRanked = this.$.fabs.querySelector('paper-fab[icon="mdi:trophy"')
+
+          if(!fabPrincipal.hasAttribute('open')) {
+            Velocity(fabMasteries, { bottom: '+=68px', opacity: 1}, 300);
+            Velocity(fabRunes, { bottom: '+=133px', opacity: 1}, 300);
+            Velocity(fabRanked, { bottom: '+= 200px', opacity: 1}, 300)
+
+            fabPrincipal.setAttribute('open', '');
+            fabPrincipal.setAttribute('icon', 'mdi:close');
+          } else {
+            Velocity(fabMasteries, 'reverse');
+            Velocity(fabRunes, 'reverse');
+            Velocity(fabRanked, 'reverse');
+
+            fabPrincipal.removeAttribute('open');
+            fabPrincipal.setAttribute('icon', 'mdi:eye');
+          }
+        },
+
+        goBack: function () {
+          return this.routeService.goBack();
+        },
+
+        goToMasteries: function () {
+          return this.routeService.go('/summoners/' + this.summonerId + '/masteries?region=' + this.region);
+        },
+
+        goToRunes: function () {
+          return this.routeService.go('/summoners/' + this.summonerId + '/runes?region=' + this.region);
+        },
+
+        goToRanked: function () {
+          return this.routeService.go('/summoners/' + this.summonerId + '/ranked?region=' + this.region);
+        }
+      });
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,205 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mastery-page" attributes="page">
+  <template>
+    <link rel="stylesheet" href="mastery-page.css" />
+
+    <div class="container">
+        <div class="page offense">
+          <div class="masteries">
+            <template repeat="{{mastery in offense}}">
+              <div class="mastery">
+                <template if="{{mastery}}">
+                  <img src="images/mastery/{{mastery.id}}.jpg" />
+
+                  <div class="points">
+                    {{mastery.add}} / {{mastery.max}}
+                  </div>
+                </template>
+              </div>    
+            </template>
+          </div>
+
+          <div class="total">
+            {{i18n.strings.attack}}: {{totalOffense}}
+          </div>
+        </div>
+
+        <div class="page defense">
+          <div class="masteries">
+            <template repeat="{{mastery in defense}}">
+              <div class="mastery">
+                <template if="{{mastery}}">
+                  <img src="images/mastery/{{mastery.id}}.jpg" />
+
+                  <div class="points">
+                    {{mastery.add}} / {{mastery.max}}
+                  </div>
+                </template>
+              </div>    
+            </template>
+          </div>
+
+          <div class="total">
+            {{i18n.strings.defense}}: {{totalDefense}}
+          </div>
+        </div>
+
+        <div class="page utility">
+          <div class="masteries">
+            <template repeat="{{mastery in utility}}">
+              <div class="mastery">
+                <template if="{{mastery}}">
+                  <img src="images/mastery/{{mastery.id}}.jpg" />
+
+                  <div class="points">
+                    {{mastery.add}} / {{mastery.max}}
+                  </div>
+                </template>
+              </div>    
+            </template>
+          </div>
+
+          <div class="total">
+            {{i18n.strings.utility}}: {{totalUtility}}
+          </div>
+        </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        init: function () {
+        this.staticMasteries = [
+            {id: 4111, add: 0, max: 1},
+            {id: 4112, add: 0, max: 4},
+            {id: 4113, add: 0, max: 4},
+            {id: 4114, add: 0, max: 1},
+            {id: 4121, add: 0, max: 1},
+            {id: 4122, add: 0, max: 3},
+            {id: 4123, add: 0, max: 3},
+            {id: 4124, add: 0, max: 1},
+            {id: 4131, add: 0, max: 1},
+            {id: 4132, add: 0, max: 1},
+            {id: 4133, add: 0, max: 1},
+            {id: 4134, add: 0, max: 3},
+            {id: 4141, add: 0, max: 1},
+            {id: 4142, add: 0, max: 3},
+            {id: 4143, add: 0, max: 3},
+            {id: 4144, add: 0, max: 1},
+            {id: 4151, add: 0, max: 1},
+            {id: 4152, add: 0, max: 3},
+            ,
+            {id: 4154, add: 0, max: 1},
+            ,
+            {id: 4162, add: 0, max: 1},
+
+            {id: 4211, add: 0, max: 1},
+            {id: 4212, add: 0, max: 4},
+            {id: 4213, add: 0, max: 4},
+            {id: 4214, add: 0, max: 1},
+            {id: 4221, add: 0, max: 1},
+            {id: 4222, add: 0, max: 3},
+            ,
+            {id: 4224, add: 0, max: 1},
+            {id: 4231, add: 0, max: 1},
+            {id: 4232, add: 0, max: 1},
+            {id: 4233, add: 0, max: 1},
+            {id: 4234, add: 0, max: 3},
+            {id: 4241, add: 0, max: 1},
+            {id: 4242, add: 0, max: 3},
+            {id: 4243, add: 0, max: 3},
+            {id: 4244, add: 0, max: 1},
+            {id: 4251, add: 0, max: 1},
+            {id: 4252, add: 0, max: 3},
+            {id: 4253, add: 0, max: 3},
+            ,
+            ,
+            {id: 4262, add: 0, max: 1},
+            /*----------------------*/
+            {id: 4311, add: 0, max: 1},
+            {id: 4312, add: 0, max: 4},
+            {id: 4313, add: 0, max: 4},
+            {id: 4314, add: 0, max: 1},
+            ,
+            {id: 4322, add: 0, max: 3},
+            {id: 4323, add: 0, max: 3},
+            {id: 4324, add: 0, max: 1},
+            {id: 4331, add: 0, max: 1},
+            {id: 4332, add: 0, max: 1},
+            {id: 4333, add: 0, max: 1},
+            {id: 4334, add: 0, max: 3},
+            {id: 4341, add: 0, max: 1},
+            {id: 4342, add: 0, max: 3},
+            {id: 4343, add: 0, max: 3},
+            {id: 4344, add: 0, max: 1},
+            ,
+            {id: 4352, add: 0, max: 3},
+            {id: 4353, add: 0, max: 3},
+            ,
+            ,
+            {id: 4362, add: 0, max: 1}
+          ];
+
+          this.totalOffense = 0;
+          this.totalDefense = 0;
+          this.totalUtility = 0;
+          this.i18n = document.getElementById('mostachoI18n');
+
+      },
+
+      pageChanged: function (oldVal, newVal) {
+        this.setPoints();
+      },
+
+      setPoints: function () {
+        this.init();
+
+        if(_.has(this.page.masteries[0], 'id')) {
+            setPointsProfileMode.call(this);
+        } else {
+            setPointsGameMode.call(this);
+        }
+
+        this.offense = _.slice(this.staticMasteries, 0, 22);
+        this.defense = _.slice(this.staticMasteries, 22, 44);
+        this.utility = _.slice(this.staticMasteries, 44);
+
+        /*--------------------------*/
+
+        function setPointsGameMode() {
+            _.forEach(this.page.masteries, function (mastery, key) {
+               var staticMastery = _.find(this.staticMasteries, {id: mastery.masteryId});
+               if(parseInt(staticMastery.id) < 4200) {
+                this.totalOffense+= mastery.rank;
+               } else if(parseInt(staticMastery.id) < 4300) {
+                this.totalDefense+= mastery.rank;
+               } else {
+                this.totalUtility+= mastery.rank;
+               }
+
+               return staticMastery.add = mastery.rank;
+            }.bind(this))    
+        }
+
+        function setPointsProfileMode() {
+            _.forEach(this.page.masteries, function (mastery, key) {
+               var staticMastery = _.find(this.staticMasteries, {id: mastery.id});
+
+               if(parseInt(staticMastery.id) < 4200) {
+                this.totalOffense+= mastery.rank;
+               } else if(parseInt(staticMastery.id) < 4300) {
+                this.totalDefense+= mastery.rank;
+               } else {
+                this.totalUtility+= mastery.rank;
+               }
+
+               return staticMastery.add = mastery.rank;
+            }.bind(this)) 
+        }
+
+      }
+      });
+    })();
+  </script>
+</polymer-element>

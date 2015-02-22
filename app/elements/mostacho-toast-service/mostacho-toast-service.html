@@ -1,0 +1,40 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mostacho-toast-service">
+  <template>
+    <paper-toast id="toast" on-core-overlay-open="{{handleOpen}}"></paper-toast>
+  </template>
+
+  <script>
+    (function () {
+      Polymer('mostacho-toast-service', {
+        ready: function () {
+          window.mostachoToastService = this;
+        },
+        
+        show: function (text, time) {
+          time = time || 3000;
+
+          this.$.toast.setAttribute('text', text);
+          this.$.toast.setAttribute('duration', time);
+          this.$.toast.show();
+
+        },
+
+        hide: function () {
+          this.$.toast.dismiss();
+        },
+
+        handleOpen: function(event) {
+          if(event.detail) {
+            var fab = document.querySelectorAll('html /deep/ [toastable]');
+            Velocity(fab, {bottom: '+=45px'}, 400)   
+          } else {
+            var fab = document.querySelectorAll('html /deep/ [toastable]');
+            Velocity(fab, 'reverse', 400)
+          }
+        }    
+      })
+    })();
+  </script>
+</polymer-element>

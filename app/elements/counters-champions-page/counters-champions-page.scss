@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  height: 100%;
+  core-toolbar {
+    background-color: #3f51b5;
+    color: #fff;
+    box-shadow: 0 0 0.3em #000;
+    text-transform: capitalize;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    font-size: 1rem;
+    paper-input {
+      display: none;
+      padding-left: 1em;
+      flex: 1;
+    }
+  }
+  champions-grid-view {
+    padding: 0.5em 1em;
+    padding-top: 4.5em;
+  }
+}

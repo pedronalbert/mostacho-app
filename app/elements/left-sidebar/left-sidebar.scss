@@ -1,0 +1,50 @@
+:host {
+  display: block;
+  #sidebar {
+    opacity: 0;
+    position: fixed;
+    width: 70vw;
+    max-width: 15rem;
+    background-color: #fff;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 55;
+    .head {
+      height: 10rem;
+      box-shadow: 0 -0.3px 0.3rem #000;
+      background-color: #7583cf;
+      color: #fff;
+      .logo {
+        height: 7rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .image {
+          width: 5.5rem;
+          height: 5.5rem;
+          position: relative;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+      .name {
+        height: 3rem;
+        line-height: 3rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: center;
+      }
+    }
+    .menu {
+      padding: 0rem 1rem;
+      position: relative;
+      color: #404040;
+      core-item::shadow #label {
+        text-transform: capitalize;
+      }
+    }
+  }
+}

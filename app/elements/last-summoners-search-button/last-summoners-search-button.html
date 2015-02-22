@@ -1,0 +1,120 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="last-summoners-search-button" attributes="">
+  <template>
+    <link rel="stylesheet" href="last-summoners-search-button.css" />
+    
+    <paper-fab toastable on-tap="{{toggleDialog}}" icon="mdi:run"></paper-fab>
+
+    <div toastable id="dialog" class="dialog">
+      <div class="content">
+        <div class="title">{{i18n.strings.fastSearch}}</div>
+          <template repeat="{{summoner in summoners}}">
+            <div class="item" data-summoner-id="{{summoner.id}}" on-tap="{{selectSummoner}}">
+              <paper-ripple fit></paper-ripple>
+              <div class="region">
+                {{summoner.region}}
+              </div>
+              <div class="name">
+                {{summoner.name}}
+              </div>
+            </div>
+          </template>
+
+          <template if="{{summoners.length < 1}}">
+            <div class="help-text">{{i18n.strings.fastSearchHelpText}}</div>
+          </template>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+        this.getSummoners()
+          .then(function (summoners) {
+            this.summoners = summoners;
+          }.bind(this));
+        this.i18n = window.mostachoI18n;
+      },
+
+      toggleDialog: function () {
+
+        if(this.hasAttribute('open')) {
+          Velocity(this.$.dialog, {
+            height: '0',
+            minHeight: '0',
+            maxHeight: '0',
+            width: '0'
+          }, 500)
+            .then(function () {
+              this.fire('closed');
+              this.removeAttribute('open');
+            }.bind(this))
+
+        } else {
+          Velocity(this.$.dialog, {
+            height: '70vh',
+            minHeight: '16rem',
+            maxHeight: '22rem',
+            width: '15rem'
+          }, 500)
+            .then(function () {
+              this.fire('opened');
+              this.setAttribute('open', '');
+            }.bind(this))
+        }
+      },
+
+      selectSummoner: function (event, detail, target) {
+        var summoners;
+
+        this.getSummoners()
+          .then(function (summoners) {
+            this.fire('selected', _.find(summoners, {id: parseInt(target.getAttribute('data-summoner-id'))}));
+          }.bind(this))
+      },
+
+      getSummoners: function () {
+        return new Promise(function (resolve, reject) {
+          localforage.getItem('last_summoners_search')
+            .then(function (summoners) {
+              if(_.isNull(summoners)) {
+                return localforage.setItem('last_summoners_search', []);
+              } else {
+                return resolve(summoners);
+              }
+            })
+            .then(function (summoners) {
+              return resolve(summoners);
+            })
+        })
+      },
+
+      unshiftSummoner: function (summoner) {
+
+        this.getSummoners()
+          .then(function (summoners) {
+            saveSummoner.call(this, summoners);
+          }.bind(this))
+
+        function saveSummoner(summoners) {
+          if(_.isUndefined(_.find(summoners, {id: summoner.id}))) {
+            summoners.unshift(summoner);
+            if(summoners.length > 20) summoners.pop();
+
+          } else {
+            _.remove(summoners, {id: summoner.id});
+            summoners.unshift(summoner);
+          }
+
+          localforage.setItem('last_summoners_search', summoners)
+            .then(function () {
+              this.summoners = summoners;
+            }.bind(this));
+        }
+      }
+      });
+    })();
+  </script>
+</polymer-element>

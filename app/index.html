@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LoL Mostacho</title>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+  <!-- build:css /styles/main.css -->
+  <link rel="stylesheet" href="./styles/main.css">
+  <!-- endbuild-->
+
+  <!-- build:js /bower_components/webcomponentsjs/webcomponents.min.js -->
+  <script src="./bower_components/webcomponentsjs/webcomponents.js"></script>
+  <script src="./bower_components/lodash/lodash.min.js"></script>
+  <script src="./bower_components/bluebird/js/browser/bluebird.min.js"></script>
+  <script src="./bower_components/localforage/dist/localforage.min.js"></script>
+  <script src="./bower_components/velocity/velocity.min.js"></script>
+  <script src="./bower_components/superagent/superagent.js"></script>
+  <script src="./bower_components/hammer.js/hammer.min.js"></script>
+  <script src="./bower_components/moment/moment.js"></script>
+  <!-- endbuild -->
+
+  <!-- will be replaced with /elements/elements.vulcanized.html -->
+  <link rel="import" href="./elements/elements.html">
+  <!-- endreplace-->
+</head>
+
+<body unresolved fullbleed layout vertical>
+  <app-router init="manual">
+    <app-route path="/summoners/search" element="summoners-search-page"></app-route>
+    <app-route path="/summoners/:summonerId" element="summoners-show-page"></app-route>
+    <app-route path="/summoners/:summonerId/masteries" element="summoners-masteries-page"></app-route>
+    <app-route path="/summoners/:summonerId/runes" element="summoners-runes-page"></app-route>
+    <app-route path="/summoners/:summonerId/ranked" element="summoners-ranked-page"></app-route>
+    <app-route path="/" element="home-page"></app-route>
+    <app-route path="/games/search" element="games-search-page"></app-route>
+    <app-route path="/games/current/:summonerId" element="games-current-page"></app-route>
+    <app-route path="/counters/champions" element="counters-champions-page"></app-route>
+    <app-route path="/counters/champions/:championId/battles" element="counters-champions-battles-page"></app-route>
+    <app-route path="/counters/battles/:battleId/results" element="counters-battles-page"/></app-route>
+    <app-route path="/settings" element="settings-page"></app-route>
+  </app-router>
+
+  <!-- Mostacho Services -->
+  <mostacho-user-config></mostacho-user-config>
+  <mostacho-i18n id="mostachoI18n"></mostacho-i18n>
+  <mostacho-route-service id="mostachoRouteService"></mostacho-route-service>
+  <mostacho-toast-service id="mostachoToastService"></mostacho-toast-service>
+  <mostacho-analytics-service id="mostachoAnalyticsService"></mostacho-analytics-service>
+  <left-sidebar id="leftSidebar"></left-sidebar>
+  <riot-api id="riotApi"></riot-api>
+  <mostacho-battle-service></mostacho-battle-service>
+  <!-- end Mostacho Services -->
+  <!-- build:js /scripts/app.js -->
+  <script src="./scripts/app.js"></script>
+  <!-- endbuild-->
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mostacho-user-config" attributes="">
+  <template>
+  </template>
+  <script>
+    (function () {
+      var _userConfig = {};
+      
+      Polymer({
+        ready: function () {
+          window.mostachoUserConfig = this;
+        },
+
+        init: function () {
+          console.log('mostacho-user-config: init()');
+          return new Promise(function (resolve, reject) {
+            localforage.getItem('user_config')
+              .then(function (config) {
+                if(_.isNull(config) || _.isUndefined(config)) {
+                  this.setNewConfig()
+                    .then(function (config) {
+                      console.log('mostacho-user-config: new config setted' + JSON.stringify(config));
+                      resolve();
+                    });
+                } else {
+                  console.log('mostacho-user-config: set existing config: ' + JSON.stringify(config));
+                  _userConfig = config;
+                  return resolve(config);
+                }
+              }.bind(this));
+          }.bind(this));
+
+        },
+
+        getConfig: function (key) {
+          return _userConfig[key];
+        },
+
+        setConfig: function (key, value) {
+          if(!_.isEqual(_userConfig[key], value)) {
+            _userConfig[key] = value;
+
+            localforage.setItem('user_config', _userConfig)
+              .then(function () {
+                console.log('config setted');
+              });
+          }
+        },
+
+        setNewConfig: function () {
+          return new Promise(function (resolve, reject) {
+            var config = {};
+
+            if(_.contains(navigator.language, 'es')) {
+              config.language = 'es';
+              config.region = 'lan';
+            } else {
+              config.language = 'en';
+              config.region = 'na';
+            }
+
+            localforage.setItem('user_config', config)
+              .then(function (config) {
+                _userConfig = config;
+                return resolve(config);
+              });
+          });
+        }
+      })
+    })();
+  </script>
+</polymer-element>

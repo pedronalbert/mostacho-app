@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  .title {
+    text-align: center;
+    font-weight: 600;
+    color: #4d4d4d;
+  }
+  .dropdown {
+    margin-bottom: 5rem;
+  }
+  paper-dropdown-menu {
+    width: 10rem;
+  }
+}

@@ -1,0 +1,48 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mostacho-battle-service" attributes="">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          window.mostachoBattleService = this;
+          this.i18n = window.mostachoI18n;
+          this.userConfig = window.mostachoUserConfig;
+        },
+
+        getChampionBattles: function (championId) {
+          return new Promise(function (resolve, reject) {
+            Request
+              .get(BACKEND_URL + '/champions/' + championId + '/battles')
+              .query({user_language: this.userConfig.getConfig('language')})
+              .end(function(err, res) {
+                if(err) return reject(this.i18n.strings.toast.connectServerError);
+                if(res.body.status === 'success') return resolve(res.body.data['battles']);
+                if(res.body.status === 'error') return resolve(res.body.message);
+              }.bind(this))
+          }.bind(this))
+        },
+
+        getBattle: function (battleId) {
+          return new Promise(function (resolve, reject) {
+            Request
+              .get(BACKEND_URL + '/battles/' + battleId)
+              .query({user_language: this.userConfig.getConfig('language')})
+              .end(function (err, res) {
+                if(res.body.status === 'success') return resolve(res.body.data['battle']);
+
+                return reject(this.i18n.strings.toast.connectServerError);
+              }.bind(this))
+          }.bind(this))
+        }
+      });
+    })();
+  </script>
+</polymer-element>

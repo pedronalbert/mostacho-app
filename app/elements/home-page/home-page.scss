@@ -1,0 +1,66 @@
+:host {
+  display: block;
+  core-toolbar {
+    background-color: #3f51b5;
+    color: #fff;
+    box-shadow: 0 0 0.25rem #000;
+    z-index: 10;
+    font-size: 1rem;
+    font-weight: 600;
+    .logo {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.25rem;
+      img {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+    }
+  }
+  .item {
+    position: relative;
+    margin: 1rem 1rem;
+    display: flex;
+    min-height: 4.5rem;
+    height: 22vh;
+    max-height: 6rem;
+    .image {
+      width: 5rem;
+      position:relative;
+      img {
+        position:absolute;
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .info {
+      padding: 0.25rem 1rem;
+      flex: 1;
+      .header {
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        margin-bottom: 0.25rem;
+      }
+      .text {
+        font-size: 0.8rem;
+        text-align: justify;
+        text-indent: 0.50rem;
+      }
+    }
+  }
+  paper-fab {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 5;
+    animation: parpadear 0.9s infinite alternate;
+  }
+}
+
+@keyframes parpadear {
+  to {
+    background-color: #e0796f;
+    -webkit-transform: scale(1.1);
+  }
+}

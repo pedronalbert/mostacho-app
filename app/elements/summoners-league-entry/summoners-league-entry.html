@@ -1,0 +1,66 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-league-entry" attributes="ranked">
+  <template>
+    <link rel="stylesheet" href="summoners-league-entry.css" />
+
+    <div class="container">
+      <div class="image">
+        <img src="images/tiers/{{ranked.tier}}_{{ranked.entries[0].division}}.png" />
+      </div>
+
+      <div class="info">
+        <div class="title">
+          {{ranked.name}}
+        </div>
+
+        <div class="tier-division">
+          <div class="tier">Tier: <span class="{{ranked.tier}}">{{ranked.tier}}</span></div>
+
+          <template if="{{ ranked.tier != 'CHALLENGER'}}">
+            <template if="{{ranked.tier != 'MASTER'}}">
+              <template if="{{ranked.entries[0].division != '0'}}">
+                <div class="division">Division: <span>{{ranked.entries[0].division}}</span>
+                </div>     
+              </template>
+            </template>
+          </template>
+        </div>
+
+        <div class="victories-defeats">
+          <div class="victories">
+            {{ranked.entries[0].wins}}
+          </div>
+
+          <di class="defeats">
+            {{ranked.entries[0].losses}}
+          </di>
+
+        </div>
+
+        <template if="{{!ranked.entries[0].miniSeries}}">
+          <div class="points">
+            {{i18n.strings.leaguePoints}}: <span>{{ranked.entries[0].leaguePoints}}</span>
+          </div>
+        </template>
+
+        <template if="{{ranked.entries[0].miniSeries}}">
+          <div class="promo">
+            <span>{{i18n.strings.promotion}}: </span>
+            <ranked-miniseries progress="{{ranked.entries[0].miniSeries.progress}}">
+            </ranked-miniseries> 
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+        }
+      });
+    })();
+  </script>
+</polymer-element>

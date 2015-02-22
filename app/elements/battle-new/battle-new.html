@@ -1,0 +1,198 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="battle-new" attributes="">
+  <template>
+    <link rel="stylesheet" href="battle-new.css"/>
+
+    <material-dialog id="dialog">
+      <div class="content">
+        <div class="container">
+          <div class="champions">
+            <champion-selector id="championSelector" champion="{{champion}}"> </champion-selector>
+            <div class="vs">VS</div>
+            <champion-selector id="opponentSelector" champion="{{opponent}}"></champion-selector>
+          </div>
+
+          <div id="battles" class="battles">
+              <template repeat="{{battle in battles}}">
+                <div class="battle">
+                  <div class="input">
+                    <paper-checkbox data-type="{{battle.type}}" data-champion-index="0" on-change="{{checkboxChanged}}"></paper-checkbox>
+                  </div>
+                  <div class="title">
+                    <span> {{i18n.strings.battleTypes[battle.type]}} </span> 
+                  </div>
+                  <div class="input">
+                    <paper-checkbox data-type="{{battle.type}}" data-champion-index="1" on-change="{{checkboxChanged}}"></paper-checkbox>
+                  </div>
+                </div>
+              </template>
+          </div> 
+        </div>
+      </div>
+
+      <div class="actions">
+        <paper-button close>{{i18n.strings.close}}</paper-button>
+        <paper-button on-tap="{{sendData}}">{{i18n.strings.send}}</paper-button>
+      </div>
+    </material-dialog>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function() {
+          this.battles = [
+            {
+              type: 'farming',
+              votes: [0, 0]
+            }, {
+              type: 'killing',
+              votes: [0, 0]
+            }, {
+              type: 'early',
+              votes: [0, 0]
+            }, {
+              type: 'late',
+              votes: [0, 0]
+            }
+          ];
+        },
+
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.userConfig = window.mostachoUserConfig;
+        },
+        
+        publish: {
+          champion: {
+            reflect: true
+          },
+
+          opponent: {
+            reflect: true
+          }
+        },
+
+        observe: {
+          champion: 'avoidSameChampion',
+          opponent: 'avoidSameChampion'
+        },
+
+        avoidSameChampion: function() {
+          if(_.has(this.champion, 'id') && _.has(this.opponent, 'id')) {
+            if(_.isEqual(this.champion.id, this.opponent.id)) {
+              this.opponent = '';
+            }
+          }
+        },
+
+        checkboxChanged: function(e, sender, target) {
+          var battle, checkboxCouple;
+          var checkboxClicked = target;
+
+          if (checkboxClicked.getAttribute('data-champion-index') === "0") {
+            checkboxCouple = target.parentNode.parentNode.querySelector('paper-checkbox[data-champion-index="1"]');
+          } else {
+            checkboxCouple = target.parentNode.parentNode.querySelector('paper-checkbox[data-champion-index="0"]');
+          }
+
+          if (checkboxClicked.hasAttribute('checked')) {
+            battle = _.find(this.battles, {
+              type: target.getAttribute('data-type')
+            });
+            battle.votes[target.getAttribute('data-champion-index')] = 1;
+            checkboxCouple.style.display = 'none';
+          } else {
+            battle = _.find(this.battles, {
+              type: target.getAttribute('data-type')
+            });
+            battle.votes[target.getAttribute('data-champion-index')] = 0;
+            checkboxCouple.style.display = 'inline-block';
+          }
+
+        },
+
+        clean: function(options) {
+          var checkboxs;
+
+          checkboxs = this.$.battles.querySelectorAll('paper-checkbox');
+
+          if (typeof options !== 'undefined' && options.champion) {
+            this.$.championSelector.clean();
+          }
+          if (typeof options !== 'undefined' && options.opponent) {
+            this.$.opponentSelector.clean();
+          }
+
+          _.forEach(checkboxs, function(checkbox) {
+            if (checkbox.hasAttribute('checked')) {
+              checkbox.removeAttribute('checked');
+            }
+            return checkbox.style.display = 'inline-block';
+          });
+
+           _.forEach(this.battles, function(battle) {
+            battle.votes[0] = 0;
+            battle.votes[1] = 0;
+          });
+        },
+
+        sendData: function(event, detail, target) {
+          var champion = this.champion.id;
+          var opponent;
+
+
+          target.setAttribute('disabled', '');
+
+          if(_.isUndefined(this.opponent)) {
+            target.removeAttribute('disabled');
+            return this.fire('error', this.i18n.strings.toast.selectTwoChampions);
+
+          } else {
+            opponent = this.opponent.id;
+          }
+
+          var json = {
+            champions: [champion, opponent],
+            battles: this.battles
+          };
+
+          this.analyticsService.trackEvent('NewVote', 'Sended');
+          
+          Request
+            .post(BACKEND_URL + '/battles/vote')
+            .send(json)
+            .query({user_language: this.userConfig.getConfig('language')})
+            .end(function (err, res) {
+              target.removeAttribute('disabled');
+              
+              if(err) return this.fire('error', this.i18n.strings.connectServerError);
+
+              return this.fire('response', res.body);
+            }.bind(this))
+          
+        },
+
+        open: function() {
+          var dialog = this.$.dialog;
+
+          this.$.dialog.open();
+        },
+
+        close: function() {
+          var dialog = this.$.dialog;
+          
+          this.$.dialog.close();
+        },
+
+        prettyType: function (input) {
+          if(input === 'farming') return 'Consigue mas farm';
+          if(input === 'killing') return 'Consigue mas asesinatos';
+          if(input === 'early') return 'Tiene mejor early game';
+          if(input === 'late') return 'Tiene mejor late game';
+        }
+      });
+    })();
+  </script>
+</polymer-element>

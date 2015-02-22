@@ -1,0 +1,63 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="settings-page" attributes="">
+  <template>
+    <link rel="stylesheet" href="settings-page.css" />
+    
+    <core-toolbar>
+      <paper-icon-button icon="mdi:arrow-left" on-tap="{{goBack}}"></paper-icon-button>
+      <span flex>{{i18n.strings.settings}}</span>
+    </core-toolbar>
+
+    <div class="content">
+      <div class="item">
+        <div class="icon">
+          <core-icon icon="mdi:map"></core-icon>
+        </div>
+        <div class="text">{{i18n.strings.language}}</div>
+        <div class="action">
+          <paper-button flat on-tap="{{openLanguageSelector}}">
+            {{i18n.strings.change}}
+          </paper-button>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="icon">
+          <core-icon icon="mdi:earth"></core-icon>
+        </div>
+        <div class="text">{{i18n.strings.region}}</div>
+        <div class="action">
+          <paper-button flat on-tap="{{openRegionSelector}}">
+            {{i18n.strings.change}}
+          </paper-button>
+        </div>
+      </div>
+    </div>
+
+    <region-selector id="regionSelector"></region-selector>
+    <language-selector id="languageSelector"></language-selector>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = document.getElementById('mostachoI18n');
+          this.routeService = document.getElementById('mostachoRouteService');
+        },
+
+        goBack: function () {
+          this.routeService.goBack();
+        },
+
+        openLanguageSelector: function () {
+          this.$.languageSelector.open();
+        },
+
+        openRegionSelector: function () {
+          this.$.regionSelector.open();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

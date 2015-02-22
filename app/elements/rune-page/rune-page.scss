@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  .container {
+    color: #333;
+    .title {
+      background-color: rgba(0, 0, 0, 0.1);
+      font-size: 0.9em;
+      padding: 0.5em 1.5em;
+      color: #707070;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .item {
+      display: flex;
+      padding: 0.2em 1em;
+      border-top: 1px solid rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      .image {
+        width: 3em;
+        height: 3em;
+        padding: 0.25em;
+        position: relative;
+        img {
+          width: 3em;
+          height: 3em;
+        }
+      }
+      .amount {
+        width: 1.5rem;
+        line-height: 3.5rem;
+        padding: 0em 0.5rem;
+        text-align: center;
+        font-size: 0.8em;
+        &::after {
+          content: 'x';
+        }
+      }
+      .description {
+        flex: 1;
+        padding: 0rem 0.5rem;
+        font-size: 0.8em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+  }
+}

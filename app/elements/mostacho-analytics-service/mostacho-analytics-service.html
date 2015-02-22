@@ -1,0 +1,37 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mostacho-analytics-service" attributes="">
+  <template></template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          window.mostachoAnalyticsService = this;
+        },
+
+        init: function () {
+          console.log('mostacho-analytics-service: init()');
+          if(!_.isUndefined(window.analytics)) {
+            window.analytics.startTrackerWithId('UA-59658116-3') 
+            window.analytics.trackView('Iniciada');         
+            console.log('mostacho-analytics-service: initialized!');
+          }
+        },
+
+        trackView: function (view) {
+          if(!_.isUndefined(window.analytics)) {
+            window.analytics.trackView(view);
+            console.log('mostacho-analytics-service: viewTracked: ' + view);
+          }
+        },
+
+        trackEvent: function (event, action) {
+          if(!_.isUndefined(window.analytics)) {
+            window.analytics.trackEvent(event, action)
+            console.log('mostacho-analytics-service: eventTracked: ' + event);
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

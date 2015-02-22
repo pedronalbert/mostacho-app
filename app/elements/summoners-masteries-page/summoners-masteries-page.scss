@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  core-toolbar {
+    background-color: transparent;
+    color: #fff;
+    z-index: 10;
+    position: fixed;
+    top: 0;
+  }
+  paper-tabs {
+    background-color: #3f51b5;
+    color: #fff;
+  }
+  paper-fab {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+  }
+}

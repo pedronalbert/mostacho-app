@@ -1,0 +1,18 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="counters-champions-battles-header" attributes="champion">
+  <template>
+    <link rel="stylesheet" href="counters-champions-battles-header.css"/>
+
+    <header id="header">
+      <template if="{{champion.name}}"><img src="images/champions-fonts/{{champion.id}}.jpg"/></template><span class="name">{{champion.name}}</span><span class="sub-name">{{champion.title}}</span>
+    </header>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        // define element prototype here
+      });
+    })();
+  </script>
+</polymer-element>

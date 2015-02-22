@@ -1,0 +1,94 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="left-sidebar" attributes="">
+  <template>
+    <link rel="stylesheet" href="left-sidebar.css" />
+      <overlay-layer id="layer" on-tap="{{close}}"></overlay-layer>
+
+      <div id="sidebar">
+        <div class="head">
+          <div class="logo">
+            <figure class="image">
+              <img src="../../../images/others/icon.png" />
+            </figure>
+          </div>
+          <div class="name">
+            LoL Mostacho
+          </div>
+        </div>
+        <div class="menu">
+          <core-menu selected="{{itemSelected}}">
+            <core-item icon="mdi:home" data-route="/" on-tap="{{go}}" label="Home" ></core-item>
+            <core-item icon="mdi:settings" data-route="/settings" on-tap="{{go}}" label="{{i18n.strings.settings}}"></core-item>
+            <core-item icon="mdi:logout" on-tap="{{closeApp}}" label="{{i18n.strings.leave}}"></core-item>
+          </core-menu>
+        </div>   
+      </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        // define element prototype here
+        ready: function () {
+          this.i18n = document.getElementById('mostachoI18n');
+          this.routeService = document.getElementById('mostachoRouteService');
+          //Lo ponemos en open y lo cerramos
+          this.setAttribute('open', '');
+          this.close();
+          //Set swipe
+          var swiper = new Hammer(this.$.sidebar);
+
+          swiper.on('swipeleft', this.close.bind(this))
+
+          swiper.on('swiperight', this.open.bind(this))
+        },
+
+        go: function (event) {
+          this.routeService.go(event.target.getAttribute('data-route'));
+          this.close();
+        },
+
+        toggle: function () {
+          if(this.hasAttribute('open')) {
+            this.close();
+          } else {
+            this.open();
+          }
+        },
+
+        close: function () {
+          this.$.layer.hide();
+          if(this.hasAttribute('open')) {
+            Velocity(this.$.sidebar, {
+              left: '-' + this.$.sidebar.offsetWidth
+            }, 600)
+              .then(function () {
+                //sacar un poquito para poder swipiar
+                this.$.sidebar.style.opacity = 0;
+                this.$.sidebar.style.left = '-' + (this.$.sidebar.offsetWidth - 24) + 'px'
+                this.removeAttribute('open');
+              }.bind(this))
+          }
+        },
+
+        closeApp: function () {
+          return navigator.app.exitApp();
+        },
+
+        open: function () {
+          this.$.sidebar.style.opacity = 1;
+          this.$.layer.show();
+
+          if(!this.hasAttribute('open')) {
+            Velocity(this.$.sidebar, {
+              left: '0'
+            }, 600)
+              .then(function () {
+                this.setAttribute('open', '');
+              }.bind(this))
+          }    
+        }
+      });
+    })();
+  </script>
+</polymer-element>

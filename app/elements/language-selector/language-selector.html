@@ -1,0 +1,56 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="language-selector" attributes="">
+  <template>
+    <link rel="stylesheet" href="language-selector.css" />
+
+    <material-dialog id="dialog">
+      <div class="content">
+        <div class="title">{{i18n.strings.selectLanguage}}</div>
+
+        <div class="dropdown">
+          <paper-dropdown-menu label="Language">
+            <paper-dropdown class="dropdown">
+                <core-menu selectedItem="{{languageSelected}}" class="menu">
+                    <paper-item data-language="en">ENGLISH</paper-item>
+                    <paper-item data-language="es">ESPAÑOL</paper-item>
+                </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>
+        </div>
+      </div>
+
+      <div class="actions">
+        <paper-button on-tap="{{handleLanguageSelected}}">
+          {{i18n.strings.select}}
+        </paper-button>
+      </div>
+    </material-dialog>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+          this.toastService = window.mostachoToastService;
+          this.userConfig = window.mostachoUserConfig;
+        },
+
+        open: function () {
+          this.$.dialog.open();
+        },
+
+        handleLanguageSelected: function (event) {
+          if(!_.isUndefined(this.languageSelected)) {
+            var language = this.languageSelected.getAttribute('data-language');
+            this.i18n.setLanguage(language);
+            this.userConfig.setConfig('language', language)
+            this.$.dialog.close();
+          } else {
+            this.toastService.show(this.i18n.strings.toast.selectOneLanguage);
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

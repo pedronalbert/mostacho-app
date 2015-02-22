@@ -1,0 +1,73 @@
+:host {
+  display: block;
+  core-toolbar {
+    background-color: #3f51b5;
+    color: #fff;
+    .title {
+      height: 3.5rem;
+      padding-top: 1.8rem;
+      .type {
+        font-size: 1rem;
+      }
+      .region {
+        font-size: 0.8rem;
+      }
+    }
+  }
+  paper-tabs {
+    background: linear-gradient(to right, #526ced 50%, #d042e0 50%);
+    color: #fff;
+    text-transform: uppercase;
+  }
+  .bans {
+    text-transform: capitalize;
+    display: flex;
+    line-height: 2rem;
+    height: 2rem;
+    font-weight: 600;
+    padding: 0.35rem 1.2rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #4d4d4d;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    span {
+      padding: 0rem 3rem 0rem 0rem;
+    }
+    .champions {
+      flex: 1;
+      display: flex;
+      .champion {
+        flex: 1;
+        text-align: center;
+        img {
+          width: 2rem;
+          height: 2rem;
+        }
+      }
+    }
+  }
+  #floatBox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: none;
+    opacity: 0;
+    z-index: 51;
+    div {
+      flex: 1;
+      background-color: #fff;
+      margin: 2rem;
+      padding: 1rem 0rem;
+      overflow-y: scroll;
+      position: relative;
+      .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 5rem;
+        height: 5rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,114 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="counters-champions-page" attributes="">
+  <template>
+    <link rel="stylesheet" href="counters-champions-page.css"/>
+
+    <core-toolbar id="toolbar">
+      <paper-icon-button icon="mdi:arrow-left" on-tap="{{goBack}}"></paper-icon-button>
+      <span flex>{{i18n.strings.champions}}</span>
+      <paper-input value="{{searchInput}}" label="{{i18n.searchChampions}}"></paper-input>
+      <paper-icon-button icon="mdi:magnify" on-tap="{{toggleSearch}}"></paper-icon-button>
+    </core-toolbar>
+
+    <champions-grid-view>
+      <template repeat="{{champion in champions | championsFilter(searchInput)}}">
+        <champions-grid-item data-champion-id="{{champion.id}}" on-tap="{{goToBattles}}" champion="{{champion}}"></champions-grid-item>
+      </template>
+    </champions-grid-view>
+
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          this.champions = [];
+        },
+
+        attached: function () {
+          this.i18n = window.mostachoI18n;
+          this.toastService = window.mostachoToastService;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.routeService = window.mostachoRouteService;
+          this.riotApi = window.riotApi;
+
+          this.toastService.show(this.i18n.strings.toast.loading, 80000);
+          this.analyticsService.trackView('CounterChampionsPage');
+          this.getChampions();   
+        },
+
+        getChampions: function() {
+          this.riotApi.getChampions()
+            .then(function (champions) {
+              this.champions = champions;
+              this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this));
+        },
+
+        championsFilter: function(champions, inputSearch) {
+          var championsFiltered = [];
+
+          if (!_.isEmpty(inputSearch)) {
+            inputSearch = inputSearch.toLowerCase();
+
+            _.forEach(champions, function(champion) {
+              if (_.contains(champion.name.toLowerCase(), inputSearch)) {
+                return championsFiltered.push(champion);
+              }
+            });
+
+            return championsFiltered;
+          }
+          
+          return champions;
+
+        },
+
+        toggleSearch: function() {
+          var toolbar = this.$.toolbar;
+          var toolbarTitle = toolbar.querySelector('span');
+          var toolbarInput = toolbar.querySelector('paper-input');
+          var toolbarMenuButton = toolbar.querySelector('paper-icon-button:first-child');
+          var toolbarSearchButton = toolbar.querySelector('paper-icon-button:last-child');
+
+          if(!toolbar.hasAttribute('open')) {
+            Velocity(toolbarTitle, 'fadeOut', 300);
+            Velocity(toolbarMenuButton, 'fadeOut', 300);
+            Velocity(toolbarInput, 'fadeIn', {delay: 280}, 300)
+              .then(function () {
+                 toolbarSearchButton.setAttribute('icon', 'mdi:close');  
+                 toolbarInput.focus();
+              });
+
+            toolbar.setAttribute('open', '');
+
+          } else {
+            Velocity(toolbarTitle, 'fadeIn', {delay: 280}, 300);
+            Velocity(toolbarMenuButton, 'fadeIn', {delay: 280}, 300);
+            Velocity(toolbarInput, 'fadeOut', 300)
+              .then(function () {
+                 toolbarSearchButton.setAttribute('icon', 'mdi:magnify');  
+                 this.searchInput = '';
+              }.bind(this));
+
+            toolbar.removeAttribute('open');
+          }
+        },
+        
+        goToBattles: function(event, detail, target) {
+          var championId = target.getAttribute('data-champion-id');
+
+          return this.routeService.go('/counters/champions/' + championId + '/battles');
+        },
+
+        goBack: function () {
+          return this.routeService.goBack();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

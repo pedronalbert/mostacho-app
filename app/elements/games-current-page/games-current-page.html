@@ -1,0 +1,168 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="games-current-page" attributes="region">
+  <template>
+    <link rel="stylesheet" href="games-current-page.css" />
+
+    <core-toolbar>
+      <paper-icon-button on-tap="{{goBack}}" icon="mdi:arrow-left"></paper-icon-button>
+      <div class="title">
+        <div class="type">{{i18n.strings.gameQueueConfigIds[game.gameQueueConfigId]}}</div>
+        <div class="region">{{i18n.strings.regions[region]}}</div>
+      </div>
+    </core-toolbar>
+
+    <paper-tabs selected="{{tabSelected}}">
+      <paper-tab>{{i18n.strings.blueTeam}}</paper-tab>
+      <paper-tab>{{i18n.strings.purpleTeam}}</paper-tab>
+    </paper-tabs>
+
+    <swipe-pages selected="{{tabSelected}}" nPages="2">
+      <swipe-page>
+        <template if="{{game.bannedChampions.length >= 1}}">
+          <div class="bans">
+            <span>{{i18n.strings.bans}}: </span>
+            <div class="champions">
+              <template repeat="{{champion in game.bannedChampions}}">
+                <template if="{{champion.teamId == 100}}">
+                    <div class="champion">
+                      <img src="images/champions/{{champion.championId}}.jpg" />
+                    </div>
+                </template>
+              </template>
+            </div>
+          </div>
+        </template>
+        <template repeat="{{summoner in game.participants}}">
+          <template if="{{summoner.teamId == 100}}">
+            <games-current-summoner summoner="{{summoner}}" on-open-masteries="{{openMasteries}}" on-open-runes="{{openRunes}}" on-open-summoner-profile="{{goToSummonerProfile}}">
+            </games-current-summoner>
+          </template>
+        </template>
+      </swipe-page>
+
+      <swipe-page>
+        <template if="{{game.bannedChampions.length >= 1}}">
+          <div class="bans">
+            <span>Baneos: </span>
+            <div class="champions">
+              <template repeat="{{champion in game.bannedChampions}}">
+                <template if="{{champion.teamId == 200}}">
+                    <div class="champion">
+                      <img src="images/champions/{{champion.championId}}.jpg" />
+                    </div>
+                </template>
+              </template>
+            </div>
+          </div>
+        </template>
+        <template repeat="{{summoner in game.participants}}">
+          <template if="{{summoner.teamId == 200}}">
+            <games-current-summoner summoner="{{summoner}}" on-open-masteries="{{openMasteries}}" on-open-runes="{{openRunes}}" on-open-summoner-profile="{{goToSummonerProfile}}">
+            </games-current-summoner>
+          </template>
+        </template>
+      </swipe-page>
+    </swipe-pages>
+
+    <!-- display none" -->
+    <material-dialog id="dialogMasteries">
+      <div class="content">
+        <mastery-page page="{{masteriesToShow}}">
+        </mastery-page>
+      </div>
+      <div class="actions">
+        <paper-button close>CERRAR</paper-button>
+      </div>
+    </material-dialog>
+
+    <material-dialog id="dialogRunes">
+      <div class="content">
+        <rune-page page="{{runesToShow}}">
+        </rune-page>
+      </div>
+      <div class="actions">
+        <paper-button close>CERRAR</paper-button>
+      </div>
+    </material-dialog>
+
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.tabSelected = 0;
+          this.runesToShow = {};
+          this.i18n = window.mostachoI18n;
+          this.toastService = window.mostachoToastService;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.riotApi = window.riotApi;
+          this.routeService = window.mostachoRouteService;
+        },
+        
+        attached: function () {
+          this.toastService.show(this.i18n.strings.toast.loading, 80000);
+          this.analyticsService.trackView('GameCurrent');
+          this.getData();
+        },
+
+        goToSummonerProfile: function (event) {
+          this.routeService.go('/summoners/' + event.detail + '?region=' + this.region);
+        },
+
+        getData: function () {
+          this.riotApi.getSummonerGameCurrent(this.region, this.summonerId)
+            .then(function (game) {
+              this.game = game;
+              this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this));
+
+        },
+
+        openMasteries: function (event, detail) {
+          this.masteriesToShow = detail;
+          this.$.dialogMasteries.open();
+        },
+
+        openRunes: function (event, detail) {
+          var runesToPrepare = detail;
+          var runesPrepared = [];
+
+
+          //Add aditional data
+          window.riotApi.getRunes('lan', 'image')
+            .then(function (staticRunes) {
+              addStaticData.call(this, staticRunes);
+            }.bind(this))
+
+          function addStaticData(staticRunes) {
+            _.forEach(runesToPrepare, function (rune) {
+              var amount = rune.count;
+
+              rune = _.find(staticRunes, {id: rune.runeId});
+              rune.amount = amount;
+
+              runesPrepared.push(rune);
+
+            }.bind(this))
+
+            this.runesToShow.marks = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'red'});
+            this.runesToShow.seals = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'yellow'});
+            this.runesToShow.glyphs = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'blue'});
+            this.runesToShow.quintessences = _.filter(runesPrepared, function (rune) { return rune.rune.type === 'black'});
+          }
+
+          this.$.dialogRunes.open();
+        },
+
+        goBack: function () {
+          return this.routeService.goBack();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,61 @@
+:host {
+  display: block;
+  .offense {
+    background-color: #ffcdd2;
+    border: 5px solid #b71c1c;
+  }
+  .defense {
+    background-color: #c5cae9;
+    border: 5px solid #1a237e;
+  }
+  .utility {
+    background-color: #c8e6c9;
+    border: 5px solid #1b5e20;
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 15rem;
+    position: relative;
+    .page {
+      border-radius: 8px;
+      margin: auto;
+      position: relative;
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      .masteries {
+        display: flex;
+        flex-wrap: wrap;
+        .mastery {
+          width: 23%;
+          margin: 6px 1%;
+          height: 40px;
+          position: relative;
+          img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+          }
+          .points {
+            position: absolute;
+            width: 100%;
+            height: 16px;
+            line-height: 16px;
+            font-size: 14px;
+            text-align: center;
+            bottom: 0px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.3);
+          }
+        }
+      }
+      .total {
+        padding-top: 0.5em;
+        font-weight: 600;
+        color: #333;
+        text-transform: capitalize;
+      }
+    }
+  }
+}

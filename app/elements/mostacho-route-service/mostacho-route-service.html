@@ -1,0 +1,34 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="mostacho-route-service" attributes="">
+  <template></template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          window.mostachoRouteService = this;
+        },
+
+        init: function () {
+          document.querySelector('app-router').init();
+          if(_.isEmpty(window.location.hash)) {
+            this.go('/');
+          }
+        },
+
+        go: function (url) {
+          document.querySelector('app-router').go(url);
+        },
+
+        goBack: function () {
+          window.history.back();
+        },
+
+
+        reload: function ()  {
+          window.location.reload();
+        }
+      })
+    })();
+  </script>
+</polymer-element>

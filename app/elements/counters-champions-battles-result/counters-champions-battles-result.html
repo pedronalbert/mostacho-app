@@ -1,0 +1,61 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="counters-champions-battles-result" attributes="battle">
+  <template>
+    <link rel="stylesheet" href="counters-champions-battles-result.css"/>
+
+    <div id="item" class="item">
+      <paper-ripple fit></paper-ripple>
+      <div class="champion">
+        <figure><img src="images/champions/{{battle.champion.id}}.jpg"/></figure>
+        <div id="championTitle" class="result"></div>
+      </div>
+      <div class="battle-info">
+        <div class="names">
+          <div class="name">{{battle.champion.name}}</div>
+          <div class="vs">VS</div>
+          <div class="name">{{battle.opponent.name}}</div>
+        </div>
+        <div class="progress">
+          <paper-progress value="{{battle.championPercent}}"></paper-progress>
+        </div>
+      </div>
+      <div class="champion">
+        <figure><img src="images/champions/{{battle.opponent.id}}.jpg"/></figure>
+        <div id="opponentTitle" class="result"></div>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.riotApi = window.riotApi;
+          this.i18n = window.mostachoI18n;
+        },
+
+        battleChanged: function() {
+
+          this.riotApi.getChampions()
+            .then(function (champions) {
+              this.battle.champion = _.find(champions, {id: this.battle.champion});
+              this.battle.opponent = _.find(champions, {id: this.battle.opponent});
+            }.bind(this))
+            .finally(function () {
+              if (this.battle.championPercent > 50) {
+                this.$.championTitle.innerHTML = this.i18n.strings.itWin;
+                this.$.championTitle.style.color = '#4CAF50';
+                this.$.opponentTitle.innerHTML = this.i18n.strings.itLose;
+                return this.$.opponentTitle.style.color = '#E91E63';
+              } else if (this.battle.championPercent < 50) {
+                this.$.championTitle.innerHTML = this.i18n.strings.itLose;
+                this.$.opponentTitle.innerHTML = this.i18n.strings.itWin;
+                this.$.opponentTitle.style.color = '#4CAF50';
+                return this.$.championTitle.style.color = '#E91E63';
+              }   
+            }.bind(this))
+        }
+      });
+    })();
+  </script>
+</polymer-element>

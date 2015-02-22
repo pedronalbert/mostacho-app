@@ -1,0 +1,76 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-masteries-page" attributes="summonerId region">
+  <template>
+    <link rel="stylesheet" href="summoners-masteries-page.css" />
+
+    <core-toolbar>
+      <paper-icon-button on-tap="{{goBack}}" icon="mdi:arrow-left">>
+      </paper-icon-button>
+    </core-toolbar>
+
+    <summoners-header summoner="{{summoner}}" region="{{region}}">
+    </summoners-header>
+
+    <paper-tabs scrollable selected="{{tabSelected}}">
+      <template repeat="{{page in summoner.masteries}}">
+        <paper-tab>
+          {{page.name}}
+        </paper-tab>
+      </template>
+    </paper-tabs>
+  <br/>
+    <swipe-pages selected="{{tabSelected}}">
+      <template repeat="{{page in summoner.masteries}}">
+          <swipe-page>
+            <div class="container">
+              <mastery-page page="{{page}}">
+              </mastery-page>
+            </div>
+          </swipe-page>
+      </template>
+    </swipe-pages>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function () {
+          this.summoner = {};
+          this.tabSelected = 0;
+        },
+
+        attached: function () {
+          this.i18n = window.mostachoI18n;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.toastService = window.mostachoToastService;
+          this.riotApi = window.riotApi;
+          this.routeService = window.mostachoRouteService;
+
+          this.analyticsService.trackView('SummonerMasteries');
+          this.toastService.show(this.i18n.strings.toast.loading, 50000);
+          this.getData();
+        },
+
+        getData: function () {
+
+          this.riotApi.getSummonerById(this.summonerId, this.region)
+            .then(function (summoner) {
+              this.summoner = summoner;
+              return this.riotApi.getSummonerMasteries(this.summonerId, this.region);
+            }.bind(this))
+            .then(function (masteries) {
+              this.summoner.masteries = masteries[this.summonerId]['pages'];
+              return this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this))
+        },
+
+        goBack: function () {
+          return this.routeService.goBack();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

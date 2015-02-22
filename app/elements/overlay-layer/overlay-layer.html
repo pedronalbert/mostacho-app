@@ -1,0 +1,25 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="overlay-layer" attributes="">
+  <template>
+    <link rel="stylesheet" href="overlay-layer.css"/>
+    <div id="layer" class="layer"></div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        show: function(duration) {
+          var layer;
+          duration = duration || 400;
+          return Velocity(this.$.layer, 'fadeIn', duration);
+        },
+
+        hide: function(duration) {
+          var layer;
+          duration = duration || 400;
+          return Velocity(this.$.layer, 'fadeOut', duration);
+        }
+      });
+    })();
+  </script>
+</polymer-element>

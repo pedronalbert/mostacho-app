@@ -1,0 +1,31 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-header" attributes="summoner region">
+  <template>
+    <link rel="stylesheet" href="summoners-header.css" />
+
+    <div class="container">
+      <div class="image">
+        <template if="{{summoner.id}}">
+          <img src="images/profileicon/{{summoner.profileIconId}}.jpg" />
+        </template>
+      </div>
+
+      <div class="name">{{summoner.name}}</div>
+      <div class="nivel">{{i18n.strings.level}}: {{summoner.summonerLevel}}</div>
+      <div class="region">{{i18n.strings.regions[region]}}</div>
+      
+      <div class="background">
+        <img src="../../images/others/lcs_bg.jpg" />
+      </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+        }
+      });
+    })();
+  </script>
+</polymer-element>

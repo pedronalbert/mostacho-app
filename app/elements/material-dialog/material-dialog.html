@@ -1,0 +1,63 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="material-dialog" attributes="">
+  <template>
+    <link rel="stylesheet" href="material-dialog.css" />
+    <overlay-layer id="overlayLayer"></overlay-layer>
+
+    <div class="container">
+      <div id="content" class="scroll-container">
+        <div class="scroll-content">
+          <content select=".content">
+          </content>
+        </div>
+      </div>
+      <div class="actions">
+        <content id="buttons" select=".actions">
+        </content>
+      </div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        domReady: function() {
+          var closeButton = this.$.buttons.getDistributedNodes()[0].querySelector('paper-button[close]');
+          if(!_.isNull(closeButton)) {
+            closeButton = new Hammer(closeButton);
+
+            closeButton.on('tap', function() {
+              this.close();
+            }.bind(this));     
+          }
+
+        },
+
+        open: function () {
+          if(!this.hasAttribute('open')) {
+            this.$.overlayLayer.show();
+
+            Velocity(this, {opacity: 1}, {display: 'flex', duration: 500})
+              .then(function () {
+                this.setAttribute('open', '');
+              }.bind(this));   
+          }
+        },
+
+        close: function () {
+          if(this.hasAttribute('open')) {
+            this.$.overlayLayer.hide();
+            this.async(function () {
+              this.$.content.scrollTop = 0;  
+            }, this, 400)
+            Velocity(this, {opacity: 0}, {display: 'none', duration: 500})
+              .then(function () {
+                this.removeAttribute('open');
+              }.bind(this));
+            
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,68 @@
+:host {
+  display: block;
+  .container {
+    position: relative;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    .selected {
+      display: flex;
+      .face {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        background-color: rgba(0, 0, 0, 0.2);
+        img {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+        }
+      }
+      .name {
+        flex: 1;
+        line-height: 38px;
+        padding-left: 0.25rem;
+        font-size: 0.7rem;
+        text-transform: capitalize;
+      }
+    }
+    .selector {
+      position: absolute;
+      z-index: 100;
+      top: 100%;
+      width: 100%;
+      height: 300px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: none;
+      background-color: white;
+      .champion {
+        display: flex;
+        padding: 4px 0px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-left: 1px solid rgba(0, 0, 0, 0.2);
+        .face {
+          width: 35px;
+          height: 35px;
+          position: relative;
+          border-radius: 50%;
+          overflow: hidden;
+          img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .name {
+          height: 35px;
+          line-height: 35px;
+          margin-left: 0.25rem;
+          font-size: 0.7rem;
+          flex: 1;
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+}

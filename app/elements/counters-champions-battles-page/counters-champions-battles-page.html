@@ -1,0 +1,151 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="counters-champions-battles-page" attributes="">
+  <template>
+    <link rel="stylesheet" href="counters-champions-battles-page.css"/>
+
+    <core-toolbar id="toolbar" class="toolbar">
+      <paper-icon-button icon="mdi:arrow-left" on-tap="{{goToBack}}"></paper-icon-button>
+      <span flex>{{champion.name}}</span>
+    </core-toolbar>
+
+    <counters-champions-battles-header champion="{{champion}}">
+    </counters-champions-battles-header>
+
+    <paper-tabs selected="{{tabSelected}}">
+      <paper-tab>Counters</paper-tab>
+      <paper-tab>Agreeds</paper-tab>
+      <paper-tab>Neutrals</paper-tab>
+    </paper-tabs>
+
+    <div class="content">
+      <swipe-pages selected="{{tabSelected}}">
+        <swipe-page>
+          <template repeat="{{battle in champion.battles | battlesFilter('counters')}}">
+            <counters-champions-battles-result data-battle-id="{{battle.id}}" battle="{{battle}}" on-tap="{{goToBattle}}"></counters-champions-battles-result>
+          </template>
+        </swipe-page>
+        <swipe-page>
+          <template repeat="{{battle in champion.battles | battlesFilter('agreeds')}}">
+            <counters-champions-battles-result data-battle-id="{{battle.id}}" battle="{{battle}}" on-tap="{{goToBattle}}"></counters-champions-battles-result>
+          </template>
+        </swipe-page>
+        <swipe-page>
+          <template repeat="{{battle in champion.battles | battlesFilter('neutrals')}}">
+            <counters-champions-battles-result data-battle-id="{{battle.id}}" battle="{{battle}}" on-tap="{{goToBattle}}"></counters-champions-battles-result>
+          </template>
+        </swipe-page>
+      </swipe-pages>
+    </div>
+
+    <paper-fab toastable id="fab" icon="mdi:clipboard-text" on-tap="{{openBattleForm}}"></paper-fab>
+
+    <!-- Display none -->
+    <battle-new id="battleForm" on-response="{{getResponse}}" champion="{{champion}}" on-closed="{{cleanBattleForm}}" on-error="{{getErrorResponse}}">
+    </battle-new>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        created: function() {
+          this.champion = {};
+        },
+
+        attached: function () {
+          this.i18n = window.mostachoI18n;
+          this.routeService = window.mostachoRouteService;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.riotApi = window.riotApi;
+          this.battleService = window.mostachoBattleService;
+          this.toastService = window.mostachoToastService;
+
+          this.tabSelected = 0;
+          this.toastService.show(this.i18n.strings.toast.loading, 50000);
+          this.analyticsService.trackView('CountersChampionsBattles');
+          this.getData();
+        },
+        
+        getData: function() {
+          this.riotApi.getChampions(this.championId)
+            .then(function (champions) {
+              this.champion = _.find(champions, {id: this.championId});
+              return this.battleService.getChampionBattles(this.champion.id);
+            }.bind(this))
+            .then(function (battles) {
+              this.champion.battles = battles;
+              return this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this));
+
+        },
+
+        getResponse: function(response) {
+          if (response.detail.status === 'success') {
+            this.$.battleForm.close();
+            this.$.battleForm.clean({opponent: true});
+            this.getData();
+
+            this.async(function() {
+              this.toastService.show(response.detail.message);
+            }, null, 300);
+
+          } else if (response.detail.status === 'error') {
+            this.toastService.show(response.detail.message);
+          }
+        },
+
+        getErrorResponse: function (response) {
+          this.toastService.show(response.detail);
+          this.getData();
+        },
+
+        goToBattle: function(event, sender, target) {
+         var  battleId = target.getAttribute('data-battle-id');
+
+         return this.routeService.go('/counters/battles/' + battleId + '/results');
+        },
+
+        goToBack: function () {
+          return this.routeService.goBack();
+        },
+
+        openBattleForm: function () {
+          this.$.battleForm.open();
+        },
+
+        battlesFilter: function (battles, type) {
+          var battlesFiltered = [];
+
+          if(_.isEqual(type, 'counters')) {
+            _.forEach(battles, function(battle) {
+              if (battle.championPercent < 50) {
+                 battlesFiltered.push(battle);
+              }
+            });
+          } else if (_.isEqual(type, 'agreeds')) {
+            _.forEach(battles, function(battle) {
+              if (battle.championPercent > 50) {
+                 battlesFiltered.push(battle);
+              }
+            });
+          } else {
+             _.forEach(battles, function(battle) {
+              if (battle.championPercent === 50) {
+                 battlesFiltered.push(battle);
+              }
+            });
+          }
+
+          return battlesFiltered;
+        },
+        
+        cleanBattleForm: function () {
+          this.$.battleForm.clean({opponent: true});
+        }
+      });
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,50 @@
+:host {
+  display: block;
+  .container {
+    height: 160px;
+    position: relative;
+    color: #fff;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    .image {
+      position: relative;
+      width: 5rem;
+      height: 5rem;
+      margin: 0 auto;
+      border-radius: 0.35rem;
+      overflow: hidden;
+      img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .name {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      padding: 4px;
+    }
+    .nivel {
+      text-align: center;
+      text-transform: capitalize;
+    }
+    .region {
+      text-align: center;
+    }
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      z-index: -1;
+      img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+      }
+    }
+  }
+}

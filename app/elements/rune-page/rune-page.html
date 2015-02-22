@@ -1,0 +1,100 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="rune-page" attributes="page">
+  <template>
+    <link rel="stylesheet" href="rune-page.css" />
+    
+    <template if="{{page.slots.length > 0}}">
+      <div class="container">
+        <div class="title">
+          {{i18n.strings.quintessences}}
+        </div>
+
+        <template repeat="{{rune in page.quintessences}}">
+          <div class="item">
+            <div class="image">
+              <img src="images/rune/{{rune.image.full}}" />
+            </div>
+
+            <div class="amount">
+              {{rune.amount}}
+            </div>
+
+            <div class="description">
+              <div>{{rune.description}}</div>
+            </div>
+          </div>
+        </template>
+
+        <div class="title">
+          {{i18n.strings.marks}}
+        </div>
+
+        <template repeat="{{rune in page.marks}}">
+          <div class="item">
+            <div class="image">
+              <img src="images/rune/{{rune.image.full}}" />
+            </div>
+
+            <div class="amount">
+              {{rune.amount}}
+            </div>
+
+            <div class="description">
+              <div>{{rune.description}}</div>
+            </div>
+          </div>
+        </template>
+
+        <div class="title">
+          {{i18n.strings.seals}}
+        </div>
+
+        <template repeat="{{rune in page.seals}}">
+          <div class="item">
+            <div class="image">
+              <img src="images/rune/{{rune.image.full}}" />
+            </div>
+
+            <div class="amount">
+              {{rune.amount}}
+            </div>
+
+            <div class="description">
+              <div>{{rune.description}}</div>
+            </div>
+          </div>
+        </template>
+
+        <div class="title">
+          {{i18n.strings.glyphs}}
+        </div>
+
+        <template repeat="{{rune in page.glyphs}}">
+          <div class="item">
+            <div class="image">
+              <img src="images/rune/{{rune.image.full}}" />
+            </div>
+
+            <div class="amount">
+              {{rune.amount}}
+            </div>
+
+            <div class="description">
+              <div>{{rune.description}}</div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = document.getElementById('mostachoI18n');
+        }
+      });
+    })();
+  </script>
+</polymer-element>

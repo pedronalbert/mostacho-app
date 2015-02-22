@@ -1,0 +1,77 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="region-selector" attributes="">
+  <template>
+    <link rel="stylesheet" href="region-selector.css" />
+
+    <material-dialog id="dialog">
+      <div class="content">
+        <div class="title">{{i18n.strings.selectRegion}}</div>
+
+        <div class="dropdown">
+          <paper-dropdown-menu label="Language">
+            <paper-dropdown class="dropdown">
+                <core-menu selectedItem="{{regionSelected}}" class="menu">
+                  <paper-item data-region="na">{{i18n.strings.regions.na}}</paper-item>
+                  <paper-item data-region="euw">{{i18n.strings.regions.euw}}</paper-item>
+                  <paper-item data-region="eune">{{i18n.strings.regions.eune}}</paper-item>
+                  <paper-item data-region="lan">{{i18n.strings.regions.lan}}</paper-item>
+                  <paper-item data-region="las">{{i18n.strings.regions.las}}</paper-item>
+                  <paper-item data-region="br">{{i18n.strings.regions.br}}</paper-item>
+                  <paper-item data-region="ru">{{i18n.strings.regions.ru}}</paper-item>
+                  <paper-item data-region="tr">{{i18n.strings.regions.tr}}</paper-item>
+                  <paper-item data-region="oce">{{i18n.strings.regions.oce}}</paper-item>
+                  <paper-item data-region="kr">{{i18n.strings.regions.kr}}</paper-item>
+                </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>
+        </div>
+      </div>
+
+      <div class="actions">
+        <paper-button on-tap="{{regionSelectedSet}}">
+          {{i18n.strings.select}}
+        </paper-button>
+      </div>
+    </material-dialog>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function() {
+          this.i18n = window.mostachoI18n;
+          this.userConfig = window.mostachoUserConfig;
+          this.toastService = window.mostachoToastService;
+        },
+
+        open: function () {
+          if(!this.hasAttribute('open')) {
+            this.$.dialog.open();
+            this.setAttribute('open', '');
+          }
+        },
+
+        close: function () {
+          if(this.hasAttribute('open')) {
+            this.$.dialog.close();
+            this.removeAttribute('open');
+          }
+        },
+
+        regionSelectedSet: function () {
+          if(!_.isUndefined(this.regionSelected)) {
+            this.userConfig.setConfig('region', this.regionSelected.getAttribute('data-region'));
+            //Delete static data
+            localforage.removeItem('runes')
+              .then(function () {});
+            localforage.removeItem('champions')
+              .then(function () {})
+            this.close();
+          } else {
+            this.toastService.show(this.i18n.strings.toast.selectOneRegion)
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

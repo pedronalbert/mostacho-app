@@ -1,0 +1,16 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="champions-grid-item" attributes="champion">
+  <template>
+    <link rel="stylesheet" href="champions-grid-item.css"/>   
+    <img src="images/champions/{{champion.id}}.jpg" />
+    <div class="footer"><span class="name">{{champion.name}}</span></div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        // define element prototype here
+      });
+    })();
+  </script>
+</polymer-element>

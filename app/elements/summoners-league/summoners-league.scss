@@ -1,0 +1,85 @@
+:host {
+  display: block;
+  .active {
+    background-color: #e1e4f5;
+  }
+  .container {
+    color: #333;
+    padding: 0rem 1rem;
+    .head {
+      display: flex;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      .leagueName {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .dropdown {
+        flex: 1;
+        z-index: 3;
+        paper-dropdown-menu {
+          margin: 0;
+          padding: 0;
+          z-index: 2;
+        }
+      }
+    }
+    .item {
+      font-size: 14px;
+      padding: 0.6rem 0.2rem;
+      display: flex;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      .info {
+        flex: 1;
+        .row {
+          display: flex;
+        }
+        .name {
+          flex: 1;
+          font-weight: 600;
+          font-size: 1.1em;
+        }
+        .stats {
+          flex: 1;
+          display: flex;
+          text-align: center;
+          .wins {
+            flex: 1;
+            font-size: 1.2em;
+            color: #4caf50;
+            &::before {
+              content: 'v:';
+              font-size: 0.9em;
+              color: #292929;
+            }
+          }
+          .loses {
+            flex: 1;
+            font-size: 1.2em;
+            color: #f44336;
+            &::before {
+              content: 'D:';
+              font-size: 0.8em;
+              color: #292929;
+            }
+          }
+        }
+        .badges {
+          flex: 1;
+        }
+        .points {
+          flex: 1;
+          text-transform: capitalize;
+          span {
+            font-weight: 600;
+          }
+        }
+        ranked-miniseries {
+          flex: 1;
+        }
+      }
+    }
+  }
+}

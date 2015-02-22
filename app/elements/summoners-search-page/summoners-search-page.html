@@ -1,0 +1,111 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-search-page" attributes="">
+  <template>
+    <link rel="stylesheet" href="summoners-search-page.css" />
+
+    <core-toolbar>
+      <paper-icon-button icon="mdi:arrow-left" on-tap="{{goBack}}"></paper-icon-button>
+      <span>{{i18n.strings.searchSummoner}}</span>
+    </core-toolbar>
+
+    <div class="container">
+      <div class="image">
+        <img src="../../images/others/summoners.jpg" />
+      </div>
+
+      <div class="inputs">
+        <paper-input id="input" floatingLabel label="{{i18n.strings.summonerName}}" value="{{name}}">
+        </paper-input>
+
+        <div class="dropdown">
+          <paper-dropdown-menu label="{{i18n.strings.region}}">
+            <paper-dropdown class="dropdown">
+                <core-menu selectedItem="{{region}}" class="menu">
+                  <paper-item data-region="na">{{i18n.strings.regions.na}}</paper-item>
+                  <paper-item data-region="euw">{{i18n.strings.regions.euw}}</paper-item>
+                  <paper-item data-region="eune">{{i18n.strings.regions.eune}}</paper-item>
+                  <paper-item data-region="lan">{{i18n.strings.regions.lan}}</paper-item>
+                  <paper-item data-region="las">{{i18n.strings.regions.las}}</paper-item>
+                  <paper-item data-region="br">{{i18n.strings.regions.br}}</paper-item>
+                  <paper-item data-region="ru">{{i18n.strings.regions.ru}}</paper-item>
+                  <paper-item data-region="tr">{{i18n.strings.regions.tr}}</paper-item>
+                  <paper-item data-region="oce">{{i18n.strings.regions.oce}}</paper-item>
+                  <paper-item data-region="kr">{{i18n.strings.regions.kr}}</paper-item>
+                </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>
+        </div>
+
+        <div class="button">
+          <paper-button raised on-tap="{{searchSummoner}}">
+            {{i18n.strings.search}}
+          </paper-button>
+        </div>
+      </div>
+    </div>
+
+    <!--Floats -->
+    <last-summoners-search-button id="lastSearches" on-selected="{{searchSummoner}}">
+    </last-summoners-search-button>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.routeService = window.mostachoRouteService;
+          this.riotApi = window.riotApi;
+          this.toastService = window.mostachoToastService;
+        },
+
+        goBack: function() {
+          return this.routeService.goBack();
+        },
+
+        searchSummoner: function (event, detail, target) {
+          var name, region;
+
+          if(target.tagName === 'PAPER-BUTTON') {
+            this.$.input.$.decorator.isInvalid = false;
+            target.setAttribute('disabled', '');
+            name = this.name.toLowerCase();
+
+            if(_.isEmpty(name)) {
+              target.removeAttribute('disabled');
+              this.$.input.$.decorator.isInvalid = true;
+              return this.toastService.show(this.i18n.strings.toast.insertAnSummonerName);
+            }
+
+            if(_.isUndefined(this.region)) {
+              target.removeAttribute('disabled');
+              return this.toastService.show(this.i18n.strings.toast.selectOneRegion);
+            }
+
+            region = this.region.getAttribute('data-region');    
+          } else {
+            name = detail.name;
+            region = detail.region;
+          }
+
+          this.analyticsService.trackEvent('SummonerSearch', name + region);
+
+          this.riotApi.getSummonerByName(name, region)
+            .then(function (summoner) {
+              target.removeAttribute('disabled');
+              summoner.region = region;
+              this.$.lastSearches.unshiftSummoner(summoner); //Fab is a last-summoners-search
+              this.routeService.go('/summoners/' + summoner.id+ '?region=' + region);
+            }.bind(this))
+            .catch(function (err) {
+              target.removeAttribute('disabled');
+              this.toastService.show(err);
+            }.bind(this))
+
+        }
+      });
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,86 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="summoners-game" attributes="game">
+  <template>
+    <link rel="stylesheet" href="summoners-game.css" />
+
+    <div id="container" class="container {{ {win : game.stats.win, lose: !game.stats.win} | tokenList}}">
+      <div class="image">
+        <img src="images/champions/{{game.championId}}.jpg" />
+        <div class="level">
+          {{game.stats.level}}
+        </div>
+      </div>
+
+      <div class="spells">
+        <div>
+          <img src="images/summoner-spell/{{game.spell1}}.jpg" />
+        </div>
+        <div>
+          <img src="images/summoner-spell/{{game.spell2}}.jpg" />
+        </div>
+      </div>
+
+      <div class="info">
+          <div class="head">
+          <div class="type">
+              {{i18n.strings.gameSubTypes[game.subType]}}
+          </div>
+          <div class="map">
+            {{i18n.strings.maps[game.mapId]}}
+          </div>   
+        </div>
+
+        <div class="stats">
+          <div class="score">
+            <img src="../../images/ui/score.png" />
+            {{game.stats.championsKilled}} / 
+            {{game.stats.numDeaths}} / 
+            {{game.stats.assists}}
+          </div>
+
+          <div class="creeps">
+            <img src="../../images/ui/minion.png" />
+            {{game.stats.minionsKilled}}
+          </div>
+
+          <div class="gold">
+            <img src="../../images/ui/gold.png" />
+            {{game.stats.goldEarned | prettyGold }}
+          </div>
+        </div>
+
+        <div class="items">
+          <template repeat="{{i in [0,1,2,3,4,5]}}">
+            <template if="{{game.stats['item' + i] > 1}}">
+              <div class="item">
+                <img src="images/items/{{game.stats['item' + i]}}.jpg" alt="">
+              </div>
+            </template>
+          </template>
+        </div>
+      </div>
+    </div>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          this.i18n = window.mostachoI18n;
+        },
+
+        prettyGold: function (input) {
+          if(input.length <= 3) {
+            return input;
+          } else {
+            input = _(input).toString();
+            input = input.slice(0,-3);
+
+            return input + ' k';
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

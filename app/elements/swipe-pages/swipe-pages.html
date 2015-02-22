@@ -1,0 +1,92 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="swipe-pages" attributes="selected">
+  <template>
+    <link rel="stylesheet" href="swipe-pages.css"/>     
+    <div id="scroller" class="container">
+      <content id="content"></content>
+    </div>
+  </template> 
+  <script>
+    (function () {
+      Polymer({
+        ready: function () {
+          console.log('swipe-pages ready');
+          this.onMutation(this, this.getPages);
+        },
+
+        attached: function() {
+          var hammer = new Hammer(this);
+          this.getPages();
+
+          hammer.on('tap', function (e) {
+            console.log('zhukistrukis');
+          })
+
+          hammer.on("swipeleft swiperight", function(e) {
+            if (e.type === "swipeleft" & this.selected < this.nPages - 1) {
+              return this.selected++;
+            } else {
+              if (e.type === "swiperight" & this.selected > 0) {
+                return this.selected--;
+              }
+            }
+          }.bind(this));
+        },
+
+        getPages: function () {
+          this.pages = _.filter(this.$.content.getDistributedNodes(), function (node) {
+            return node.nodeName == 'SWIPE-PAGE';
+          })
+
+          if(this.pages.length > 0) {
+            this.nPages = this.pages.length;
+            this.pages[0].style.height = 'auto';
+          }
+        },
+
+        moveLeft: function(n, from) {
+          var scroller;
+          var n = n * 100;
+
+          //Pones en auto la nueva view
+          this.pages[this.selected].style.height = 'auto';
+          //Le bajamos el height a la vieja view
+          Velocity(this.pages[from], {
+            height: '15rem'
+          }, 300)
+          //Movemos el scroller
+          return Velocity(this.$.scroller, {
+            left: '-=' + n + '%'
+          }, 250);
+        },
+
+        moveRight: function(n, from) {
+          var scroller;
+          var n = n * 100;
+
+          //Pones en auto la nueva view
+          this.pages[this.selected].style.height = 'auto';
+          //Le bajamos el height a la vieja view
+          Velocity(this.pages[from], {
+            height: '15rem'
+          }, 300)
+          //Movemos el scroller
+          return Velocity(this.$.scroller, {
+            left: '+=' + n + '%'
+          }, 250);
+        },
+
+        selectedChanged: function(oldVal, newVal, selected) {
+          if (!_.isUndefined(oldVal)) {
+            if (oldVal < newVal) {
+              return this.moveLeft(newVal - oldVal, oldVal);
+            } else {
+              return this.moveRight(oldVal - newVal, oldVal);
+            }
+          }
+        }
+      });
+    })();
+  </script>
+</polymer-element>

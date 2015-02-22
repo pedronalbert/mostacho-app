@@ -1,0 +1,99 @@
+:host {
+  display: block;
+  font-size: 13px;
+  .win {
+    border-left: 9px solid #4caf50;
+  }
+  .lose {
+    border-left: 9px solid #f44336;
+  }
+  .container {
+    color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    padding: 8px 16px 8px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    .image {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      img {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+      }
+      .level {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: #fff;
+        z-index: 2;
+        width: 1em;
+        height: 1em;
+        bottom: 0.3em;
+        right: 0.3em;
+        font-size: 0.8rem;
+      }
+    }
+    .spells {
+      width: 2em;
+      height: 3.8rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      div {
+        flex: 1;
+        position: relative;
+        img {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+    .info {
+      padding: 0px 0.5rem;
+      flex: 1;
+      .head {
+        display: flex;
+        flex-wrap: wrap;
+        div:first-child {
+          margin-right: 0.25rem;
+          font-weight: 600;
+        }
+      }
+      .stats {
+        display: flex;
+        padding: 2px 0px;
+        justify-content: space-between;
+        font-weight: 600;
+        img {
+          width: 16px;
+          height: 16px;
+        }
+        .gold, .creeps {
+          padding: 0em 0.4rem;
+        }
+      }
+      .items {
+        display:flex;
+        justify-content: space-around;
+        background-color: rgba(0,0,0,0.1);
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: 0.25rem;
+        .item {
+          position:relative;
+          width: 1.5rem;
+          height: 1.5rem;
+          margin: 0rem 0.15rem;
+          border-radius: 0.20rem;
+          overflow: hidden;
+          border: 1px solid yellowgreen;
+          img {
+            position:absolute;
+            width:100%;
+            height:100%;
+          }
+        }
+      }
+    }
+  }
+}

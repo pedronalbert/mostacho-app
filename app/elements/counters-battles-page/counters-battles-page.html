@@ -1,0 +1,95 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<polymer-element name="counters-battles-page" attributes="battleId">
+  <template>
+    <link rel="stylesheet" href="counters-battles-page.css"/>
+
+    <counters-battles-header battle="{{battle}}">
+      <div class="toolbar" id="toolbar">
+        <paper-icon-button icon="mdi:arrow-left" on-tap="{{goBack}}"></paper-icon-button>
+      </div>
+    </counters-battles-header>
+
+    <paper-tabs selected="{{tabSelected}}">
+      <paper-tab>{{i18n.strings.summary}}</paper-tab>
+      <paper-tab>{{i18n.strings.comingSoon}}</paper-tab>
+    </paper-tabs>
+
+    <div class="content">
+      <swipe-pages selected="{{tabSelected}}">
+        <swipe-page>
+          <counters-battles-results battle="{{battle}}"></counters-battles-results>
+        </swipe-page>
+        <swipe-page></swipe-page>
+      </swipe-pages>   
+    </div>
+
+    <paper-fab toastable id="fab" icon="mdi:clipboard-text" on-click="{{openBattleForm}}"></paper-fab>
+
+    <!-- display none -->
+    <battle-new id="battleForm" on-response="{{getResponse}}" champion="{{battle.champion}}" opponent="{{battle.opponent}}" on-error="{{getErrorResponse}}">
+    </battle-new>
+
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        attached: function() {
+          this.routeService = window.mostachoRouteService;
+          this.i18n = window.mostachoI18n;
+          this.battleService = window.mostachoBattleService;
+          this.toastService = window.mostachoToastService;
+          this.analyticsService = window.mostachoAnalyticsService;
+          this.riotApi = window.riotApi;
+
+          this.toastService.show(this.i18n.strings.toast.loading, 80000);
+          this.analyticsService.trackView('CountersBattlesResult');
+          this.tabSelected = 0;
+          this.getData();
+        },
+
+        getData: function () {
+          this.battleService.getBattle(this.battleId)
+            .then(function (battle) {
+              this.battle = battle;
+              return this.riotApi.getChampions();
+            }.bind(this))
+            .then(function (champions){
+              console.log(this.battle);
+              this.battle.champion = _.find(champions, {id: this.battle.champion});
+              this.battle.opponent = _.find(champions, {id: this.battle.opponent});
+              return this.toastService.hide();
+            }.bind(this))
+            .catch(function (err) {
+              this.toastService.show(err);
+            }.bind(this))
+        },
+
+        openBattleForm: function() {
+          this.$.battleForm.open();
+        },
+
+        getResponse: function(response) {
+          if (response.detail.status === 'success') {
+            this.$.battleForm.close();
+            this.$.battleForm.clean();
+            this.async(function() {
+              this.toastService.show(response.detail.message);
+            }, this, 300);
+          }else {
+            this.toastService.show(response.detail.message)
+          }
+        },
+
+        getErrorResponse: function (response) {
+          this.toastService.show(response.detail);
+          this.getData();
+        },
+
+        goBack: function() {
+          return this.routeService.goBack();
+        }
+      });
+    })();
+  </script>
+</polymer-element>

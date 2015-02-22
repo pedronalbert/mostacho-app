@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  #fab {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+  }
+  paper-tabs {
+    background-color: #3f51b5;
+    color: #fff;
+    box-shadow: 0px 0px 4px black;
+    text-transform: uppercase;
+  }
+  .content {
+    padding: 0rem 1rem;
+  }
+}
